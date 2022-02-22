@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  geiger_api:
-    path: ../cores/toolbox-communicationApi
+  geiger_api: ^0.7.0
   geiger_localstorage: ^0.6.30
 
 dev_dependencies:
