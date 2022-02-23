@@ -133,9 +133,9 @@ packages:
   geiger_api:
     dependency: transitive
     description:
-      path: "../../cores/toolbox-communicationApi"
-      relative: true
-    source: path
+      name: geiger_api
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.7.0"
   geiger_api_connector:
     dependency: "direct main"
@@ -150,7 +150,7 @@ packages:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.30"
+    version: "0.6.31"
   hex:
     dependency: transitive
     description:

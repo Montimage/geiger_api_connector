@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   geiger_api: ^0.7.0
-  geiger_localstorage: ^0.6.30
+  geiger_localstorage: ^0.6.31
 
 dev_dependencies:
   flutter_test:
