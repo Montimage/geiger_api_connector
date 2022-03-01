@@ -1,4 +1,4 @@
-## 0.1.0
+## 0.1.1
 
 * Update with geiger_localstorage 0.6.38
 * Add github action flow to automatically publish to pub.dev
