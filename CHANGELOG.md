@@ -1,3 +1,9 @@
+## 0.2.0
+
+* Add `updatePluginNode` method to write plugin information into the plugin node
+* Update with geiger_api: 0.7.3 and geiger_localstorage: 0.6.42
+* fix kotlin version to: 1.6.10
+
 ## 0.1.1
 
 * Update with geiger_localstorage 0.6.38

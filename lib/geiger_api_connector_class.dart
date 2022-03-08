@@ -1,21 +1,3 @@
-// You have generated a new plugin project without
-// specifying the `--platforms` flag. A plugin project supports no platforms is generated.
-// To add platforms, run `flutter create -t plugin --platforms <platforms> .` under the same
-// directory. You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
-
-// import 'dart:async';
-
-// import 'package:flutter/services.dart';
-
-// class GeigerApiConnector {
-//   static const MethodChannel _channel = MethodChannel('geiger_api_connector');
-
-//   static Future<String?> get platformVersion async {
-//     final String? version = await _channel.invokeMethod('getPlatformVersion');
-//     return version;
-//   }
-// }
-
 import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
@@ -492,5 +474,27 @@ class GeigerApiConnector {
       }
       return false;
     }
+  }
+
+  /// Update the information of the external plugin
+  Future<bool> updatePluginNode(
+      String pluginId, String name, String companyName) async {
+    // Prepare the plugin node
+    bool ret = await prepareRoot([
+      'Devices',
+      currentDeviceId!,
+    ], '');
+    if (ret == false) {
+      log('Failed to prepare the plugin node');
+      return false;
+    }
+    // Write plugin info
+    ret = await sendDataNode(':Devices:${currentDeviceId!}:$pluginId',
+        ['name', 'company_name'], [name, companyName]);
+    if (ret == false) {
+      log('Failed to store plugin information');
+      return false;
+    }
+    return true;
   }
 }

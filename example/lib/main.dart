@@ -65,9 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<bool> initMasterPlugin() async {
     final bool initGeigerAPI = await masterApiConnector.connectToGeigerAPI();
     if (initGeigerAPI == false) return false;
-    final bool initLocalStorage =
-        await masterApiConnector.connectToLocalStorage();
-    if (initLocalStorage == false) return false;
+    final bool ret = await masterApiConnector.connectToLocalStorage();
+    if (ret == false) return false;
     final bool regPluginListener =
         await masterApiConnector.registerPluginListener();
     final bool regStorageListener =
@@ -79,40 +78,40 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<bool> initExternalPlugin() async {
     final bool initGeigerAPI = await pluginApiConnector.connectToGeigerAPI();
     if (initGeigerAPI == false) return false;
-    bool initLocalStorage = await pluginApiConnector.connectToLocalStorage();
-    if (initLocalStorage == false) return false;
+    bool ret = await pluginApiConnector.connectToLocalStorage();
+    if (ret == false) return false;
 
     // Prepare some data roots
-    initLocalStorage = await pluginApiConnector.prepareRoot([
+    ret = await pluginApiConnector.prepareRoot([
       'Device',
       pluginApiConnector.currentDeviceId!,
       montimagePluginId,
       'data',
       'metrics'
     ], '');
-    if (initLocalStorage == false) return false;
-    initLocalStorage = await pluginApiConnector.prepareRoot([
+    if (ret == false) return false;
+    ret = await pluginApiConnector.prepareRoot([
       'Users',
       pluginApiConnector.currentUserId!,
       montimagePluginId,
       'data',
       'metrics'
     ], '');
-    if (initLocalStorage == false) return false;
-    initLocalStorage = await pluginApiConnector.prepareRoot([
+    if (ret == false) return false;
+    ret = await pluginApiConnector.prepareRoot([
       'Chatbot',
       'sensors',
       montimagePluginId,
     ], '');
-    if (initLocalStorage == false) return false;
-
+    if (ret == false) return false;
+    // write the plugin information
+    ret = await pluginApiConnector.updatePluginNode(
+        montimagePluginId, 'My Awesome Plugin', 'Montimage');
     // Prepare some data nodes
-    initLocalStorage =
-        await pluginApiConnector.addDeviceSensorNode(deviceNodeDataModel);
-    if (initLocalStorage == false) return false;
-    initLocalStorage =
-        await pluginApiConnector.addUserSensorNode(userNodeDataModel);
-    if (initLocalStorage == false) return false;
+    ret = await pluginApiConnector.addDeviceSensorNode(deviceNodeDataModel);
+    if (ret == false) return false;
+    ret = await pluginApiConnector.addUserSensorNode(userNodeDataModel);
+    if (ret == false) return false;
 
     // Prepare for plugin event handler
     pluginApiConnector.addPluginEventhandler(MessageType.scanPressed,
