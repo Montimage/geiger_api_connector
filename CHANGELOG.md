@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Handle error in unCatchZone
+
 ## 0.2.0
 
 * Add `updatePluginNode` method to write plugin information into the plugin node

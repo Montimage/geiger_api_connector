@@ -86,15 +86,25 @@ class GeigerApiConnector {
         flushGeigerApiCache();
         if (pluginId == GeigerApi.masterId) {
           pluginApi = await getGeigerApi('', pluginId, Declaration.doShareData);
-          pluginApi!.zapState();
-          log('MasterId: ${pluginApi.hashCode}');
-          return true;
+          if (pluginApi != null) {
+            pluginApi!.zapState();
+            log('MasterId: ${pluginApi.hashCode}');
+            return true;
+          } else {
+            log('Failed to initialize the master plugin. Return null');
+            return false;
+          }
         } else {
           pluginApi = await getGeigerApi(
               './$pluginId', pluginId, Declaration.doShareData);
-          pluginApi!.zapState();
-          log('pluginApi: ${pluginApi.hashCode}');
-          return true;
+          if (pluginApi != null) {
+            pluginApi!.zapState();
+            log('pluginApi: ${pluginApi.hashCode}');
+            return true;
+          } else {
+            log('Failed to initialize the master plugin. Return null');
+            return false;
+          }
         }
       } catch (e, trace) {
         log('Failed to get the GeigerAPI');
