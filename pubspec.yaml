@@ -1,6 +1,6 @@
 name: geiger_api_connector
 description: A connector to GEIGER APIs
-version: 0.2.1
+version: 0.2.2
 homepage: "https://github.com/luongnv89/geiger_api_connector"
 
 environment:

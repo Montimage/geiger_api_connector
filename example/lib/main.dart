@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: Icon(
                   Icons.center_focus_strong_outlined,
                 ),
-                text: 'Geiger Toolbox (Backend)',
+                text: 'GeigerToolbox',
               ),
               Tab(
                 icon: Icon(Icons.extension_rounded),
@@ -189,11 +189,15 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             const SizedBox(height: 5),
             const Text(
-              'Geiger Toolbox (Backend)',
+              'GeigerToolbox',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.orange),
+            ),
+            Text(
+              '(geiger_api_connector: ${GeigerApiConnector.version})',
+              style: const TextStyle(fontStyle: FontStyle.italic),
             ),
             !isMasterStarted
                 ? Column(children: [

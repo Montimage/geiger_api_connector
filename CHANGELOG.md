@@ -1,5 +1,10 @@
 ## 0.2.1
 
+* Add `GeigerApiConnector.version` to query the version of GeigerAPIConnector
+* Replace app icon for example app
+
+## 0.2.1
+
 * Handle error in unCatchZone
 
 ## 0.2.0
