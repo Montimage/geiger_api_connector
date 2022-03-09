@@ -1,4 +1,4 @@
-## 0.2.1
+## 0.2.2
 
 * Add `GeigerApiConnector.version` to query the version of GeigerAPIConnector
 * Replace app icon for example app
