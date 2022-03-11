@@ -1,3 +1,7 @@
+## 0.2.4
+
+* Correct version number
+
 ## 0.2.3
 
 * change `GEIGERValue` to `GEIGERvalue`
