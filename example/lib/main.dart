@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:geiger_api_connector/geiger_api_connector.dart';
@@ -7,6 +9,17 @@ import 'package:geiger_api_connector/geiger_api_connector.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
+  if (Platform.isWindows) {
+    doWhenWindowReady(() {
+      final win = appWindow;
+      const initialSize = Size(417, 732);
+      win.minSize = initialSize;
+      win.size = initialSize;
+      win.alignment = Alignment.center;
+      win.title = "Custom window with Flutter";
+      win.show();
+    });
+  }
 }
 
 class MyApp extends StatelessWidget {
