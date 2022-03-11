@@ -159,7 +159,7 @@ class GeigerApiConnector {
     log(storageStr);
     return storageStr;
     // Node demoExample02 = NodeImpl(':Local:DemoExample', '');
-    // await demoExample02.addOrUpdateValue(NodeValueImpl('GEIGERValue', '100'));
+    // await demoExample02.addOrUpdateValue(NodeValueImpl('GEIGERvalue', '100'));
     // log('Going to trigger some changes');
     // await storageController!.addOrUpdate(demoExample02);
   }
@@ -299,7 +299,7 @@ class GeigerApiConnector {
         ':Device:$currentDeviceId:$pluginId:data:metrics:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
-      node.addOrUpdateValue(NodeValueImpl('GEIGERValue', value));
+      node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
       await storageController!.addOrUpdate(node);
       log('Updated node: ');
       log(node.toString());
@@ -319,7 +319,7 @@ class GeigerApiConnector {
     String nodePath = ':Users:$currentUserId:$pluginId:data:metrics:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
-      node.addOrUpdateValue(NodeValueImpl('GEIGERValue', value));
+      node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
       await storageController!.addOrUpdate(node);
       log('Updated node: ');
       log(node.toString());
@@ -457,7 +457,7 @@ class GeigerApiConnector {
     log('Going to get value of node at $nodePath');
     try {
       Node node = await storageController!.get(nodePath);
-      var temp = await node.getValue('GEIGERValue');
+      var temp = await node.getValue('GEIGERvalue');
       return temp?.getValue('en');
     } catch (e, trace) {
       log('Failed to get value of node at $nodePath');

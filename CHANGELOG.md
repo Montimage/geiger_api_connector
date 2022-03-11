@@ -1,3 +1,7 @@
+## 0.2.3
+
+* change `GEIGERValue` to `GEIGERvalue`
+
 ## 0.2.2
 
 * Add `GeigerApiConnector.version` to query the version of GeigerAPIConnector
