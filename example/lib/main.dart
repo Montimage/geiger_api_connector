@@ -75,8 +75,17 @@ class _MyHomePageState extends State<MyHomePage> {
       threatsImpact:
           '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium');
 
+  String masterExecutor = 'cybergeigertoolbox.geiger_toolbox;'
+      'cybergeigertoolbox.geiger_toolbox.MainActivity;'
+      'TODO';
+
+  String pluginExecutor = 'com.montimage.example;'
+      'com.montimage.example.MainActivity;'
+      'TODO';
+
   Future<bool> initMasterPlugin() async {
-    final bool initGeigerAPI = await masterApiConnector.connectToGeigerAPI();
+    final bool initGeigerAPI = await masterApiConnector.connectToGeigerAPI(
+        masterExecutor: masterExecutor);
     if (initGeigerAPI == false) return false;
     final bool ret = await masterApiConnector.connectToLocalStorage();
     if (ret == false) return false;
@@ -89,7 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<bool> initExternalPlugin() async {
-    final bool initGeigerAPI = await pluginApiConnector.connectToGeigerAPI();
+    final bool initGeigerAPI = await pluginApiConnector.connectToGeigerAPI(
+        masterExecutor: masterExecutor, pluginExecutor: pluginExecutor);
     if (initGeigerAPI == false) return false;
     bool ret = await pluginApiConnector.connectToLocalStorage();
     if (ret == false) return false;
@@ -497,6 +507,38 @@ class _MyHomePageState extends State<MyHomePage> {
                       const SizedBox(height: 5),
                       ElevatedButton(
                         onPressed: () async {
+                          // trigger/send a SCAN_COMPLETED event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final String payload = '''{
+                            "title":"A message from MI Cyberrange",
+                            "message":"You should do more anti-phishing email testing",
+                            "timestamp": ${DateTime.now().millisecondsSinceEpoch}
+                          }''';
+                          final bool sentData = await pluginApiConnector
+                              .sendPluginEventWithPayload(
+                                  MessageType.customEvent, payload);
+                          if (sentData == false) {
+                            _showSnackBar(
+                                'Failed to send a message with payload');
+                          } else {
+                            _showSnackBar(
+                                'A message with payload has been sent');
+                          }
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        child: const Text(
+                            'Send a custom event with payload (json encoded string)'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      ElevatedButton(
+                        onPressed: () async {
                           // trigger/send a STORAGE_EVENT event
                           setState(() {
                             isInProcessing = true;
@@ -556,6 +598,17 @@ class _MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         child: const Text('Show all storage events'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      ElevatedButton(
+                        onPressed: () {
+                          pluginApiConnector.sendPluginEventType(
+                              MessageType.returningControl);
+                        },
+                        child: const Text('Back to the GeigerToolbox'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),

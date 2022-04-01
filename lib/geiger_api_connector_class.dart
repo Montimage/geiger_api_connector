@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
@@ -77,16 +78,21 @@ class GeigerApiConnector {
   }
 
   /// Get an instance of GeigerApi, to be able to start working with GeigerToolbox
-  Future<bool> connectToGeigerAPI() async {
+  Future<bool> connectToGeigerAPI(
+      {String? pluginExecutor, String? masterExecutor}) async {
     log('Trying to connect to the GeigerApi');
     if (pluginApi != null) {
       log('Plugin $pluginId has been initialized');
       return true;
     } else {
+      if (masterExecutor != null) {
+        GeigerApi.masterExecutor = masterExecutor;
+      }
       try {
         flushGeigerApiCache();
         if (pluginId == GeigerApi.masterId) {
-          pluginApi = await getGeigerApi('', pluginId, Declaration.doShareData);
+          pluginApi = await getGeigerApi(
+              masterExecutor ?? '', pluginId, Declaration.doShareData);
           if (pluginApi != null) {
             pluginApi!.zapState();
             log('MasterId: ${pluginApi.hashCode}');
@@ -97,7 +103,7 @@ class GeigerApiConnector {
           }
         } else {
           pluginApi = await getGeigerApi(
-              './$pluginId', pluginId, Declaration.doShareData);
+              pluginExecutor ?? '', pluginId, Declaration.doShareData);
           if (pluginApi != null) {
             pluginApi!.zapState();
             log('pluginApi: ${pluginApi.hashCode}');
@@ -133,7 +139,7 @@ class GeigerApiConnector {
       return true;
     } else {
       try {
-        storageController = pluginApi!.getStorage();
+        storageController = pluginApi!.storage;
         log('Connected to the GeigerStorage ${storageController.hashCode}');
         return await updateCurrentIds();
       } catch (e, trace) {
@@ -217,8 +223,7 @@ class GeigerApiConnector {
       try {
         // await pluginApi!
         //     .registerListener(handledEvents, pluginListener!); // This should be correct one
-        await pluginApi!
-            .registerListener([MessageType.allEvents], pluginListener!);
+        pluginApi!.registerListener([MessageType.allEvents], pluginListener!);
         log('PluginListener ${pluginListener.hashCode} ($pluginId) has been registered and activated');
         isPluginListenerRegistered = true;
         return true;
@@ -237,14 +242,38 @@ class GeigerApiConnector {
   Future<bool> sendPluginEventType(MessageType messageType) async {
     try {
       log('Trying to send a message type $messageType');
-      // final GeigerUrl testUrl = GeigerUrl.fromSpec(
-      //     'geiger://${GeigerApi.masterId}/test'); // TODO: is that the testURL always like this?
-      // pluginApi.scanButtonPressed();
+      // final GeigerUrl pluginURL = GeigerUrl.fromSpec('geiger://$pluginId');
       final Message request = Message(
         pluginId,
         GeigerApi.masterId,
         messageType,
         null,
+      );
+      await pluginApi!.sendMessage(request);
+      log('A message type $messageType has been sent successfully');
+      return true;
+    } catch (e, trace) {
+      log('Failed to send a message type $messageType');
+      log(e.toString());
+      if (exceptionHandler != null) {
+        exceptionHandler!(e, trace);
+      }
+      return false;
+    }
+  }
+
+  /// Send a plugin event with payload
+  Future<bool> sendPluginEventWithPayload(
+      MessageType messageType, String payload) async {
+    try {
+      log('Trying to send a message type $messageType');
+      // final GeigerUrl pluginURL = GeigerUrl.fromSpec('geiger://$pluginId');
+      final Message request = Message(
+        pluginId,
+        GeigerApi.masterId,
+        messageType,
+        null,
+        utf8.encode(payload),
       );
       await pluginApi!.sendMessage(request);
       log('A message type $messageType has been sent successfully');
@@ -276,6 +305,17 @@ class GeigerApiConnector {
     ret = 'Total number of Plugin events: ${allEvents.length}\n\n';
     for (var i = 0; i < allEvents.length; i++) {
       ret += allEvents[i].toString();
+      log('\n Message: $ret');
+      if (allEvents[i].payload.isNotEmpty) {
+        log('\n Going to show payload');
+        try {
+          String payloadText = utf8.decode(allEvents[i].payload);
+          // log('\nPayload: $payloadText');
+          ret += '\nPayload:\n$payloadText';
+        } catch (e) {
+          log('Failed to decode payload: ${e.toString()}');
+        }
+      }
       ret += '\n-------\n';
     }
     return ret;

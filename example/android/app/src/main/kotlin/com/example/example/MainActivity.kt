@@ -1,4 +1,4 @@
-package com.example.example
+package com.montimage.example
 
 import io.flutter.embedding.android.FlutterActivity
 
