@@ -262,6 +262,29 @@ class GeigerApiConnector {
     }
   }
 
+  /// Return control - call to open an external plugin by its id
+  Future<bool> callExternalPlugin(String externalPluginId) async {
+    try {
+      log('Trying to call a plugin: $externalPluginId');
+      // final GeigerUrl pluginURL = GeigerUrl.fromSpec('geiger://$pluginId');
+      final Message request = Message(
+        GeigerApi.masterId,
+        externalPluginId,
+        MessageType.returningControl,
+        null,
+      );
+      await pluginApi!.sendMessage(request);
+      return true;
+    } catch (e, trace) {
+      log('Failed to call an external plugin: $externalPluginId');
+      log(e.toString());
+      if (exceptionHandler != null) {
+        exceptionHandler!(e, trace);
+      }
+      return false;
+    }
+  }
+
   /// Send a plugin event with payload
   Future<bool> sendPluginEventWithPayload(
       MessageType messageType, String payload) async {
