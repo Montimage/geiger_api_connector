@@ -1,6 +1,6 @@
 name: geiger_api_connector
 description: A connector to GEIGER APIs
-version: 0.2.4
+version: 0.2.5
 homepage: "https://github.com/luongnv89/geiger_api_connector"
 
 environment:
@@ -10,12 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # geiger_api: ^0.7.3
-  geiger_api:
-    git:
-      url: https://github.com/cyber-geiger/toolbox-communicationApi.git
-      ref: development # branch name
-  geiger_localstorage: ^0.6.45
+  geiger_api: ^0.7.4
+  # geiger_api:
+  #   git:
+  #     url: https://github.com/cyber-geiger/toolbox-communicationApi.git
+  #     ref: development # branch name
+  geiger_localstorage: ^0.6.46
 
 dev_dependencies:
   flutter_test:

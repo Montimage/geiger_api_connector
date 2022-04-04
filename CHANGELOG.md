@@ -1,3 +1,7 @@
+## 0.2.5
+
+* Update with geiger_api: 0.7.4 and geiger_localstorage: 0.6.46
+
 ## 0.2.4
 
 * Correct version number
