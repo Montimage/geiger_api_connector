@@ -1,7 +1,7 @@
-## 0.2.5
+## 0.2.6
 
 * Update with geiger_api: 0.7.5
-* Add some more settings based on plugin integration guide: https://github.com/cyber-geiger/toolbox-communicationApi/wiki/Plugin-Integration
+* Add some more settings based on plugin integration guide: <https://github.com/cyber-geiger/toolbox-communicationApi/wiki/Plugin-Integration>
 
 ## 0.2.5
 
