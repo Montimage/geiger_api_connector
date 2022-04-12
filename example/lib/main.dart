@@ -80,22 +80,22 @@ class _MyHomePageState extends State<MyHomePage> {
     recommendationId: 'my-recommendation-01',
     short: 'This is a short description of my recommendation 01',
     long: 'This is a long description of my description 01',
-    Action: 'geiger://my-recommendation/01',
+    action: 'geiger://my-recommendation/01',
     relatedThreatsWeights:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
     costs: 'False',
-    RecommendationType: 'Device',
+    recommendationType: 'Device',
   );
 
   RecommendationNodeModel deviceRecommendation02 = RecommendationNodeModel(
     recommendationId: 'my-recommendation-02',
     short: 'This is a short description of my recommendation 02',
     long: 'This is a long description of my description 02',
-    Action: 'geiger://my-recommendation/02',
+    action: 'geiger://my-recommendation/02',
     relatedThreatsWeights:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
     costs: 'False',
-    RecommendationType: 'Device',
+    recommendationType: 'Device',
   );
 
   // String masterExecutor = 'cybergeigertoolbox.geiger_toolbox;'

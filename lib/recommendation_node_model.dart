@@ -20,20 +20,20 @@ class RecommendationNodeModel {
     required this.recommendationId,
     required this.short,
     required this.long,
-    required this.Action,
+    required this.action,
     required this.relatedThreatsWeights,
     required this.costs,
-    required this.RecommendationType,
+    required this.recommendationType,
     // required this.pluginId,
   });
 
   String recommendationId;
   String short;
   String long;
-  String Action;
+  String action;
   String relatedThreatsWeights;
   String costs;
-  String RecommendationType;
+  String recommendationType;
   // String pluginId;
 
   factory RecommendationNodeModel.fromMap(Map<String, dynamic> json) =>
@@ -41,10 +41,10 @@ class RecommendationNodeModel {
         recommendationId: json["recommendationId"],
         short: json["short"],
         long: json["long"],
-        Action: json["Action"],
+        action: json["Action"],
         relatedThreatsWeights: json["relatedThreatsWeights"],
         costs: json["costs"],
-        RecommendationType: json["RecommendationType"],
+        recommendationType: json["RecommendationType"],
         // pluginId: json["pluginId"],
       );
 
@@ -52,10 +52,10 @@ class RecommendationNodeModel {
         "recommendationId": recommendationId,
         "short": short,
         "long": long,
-        "Action": Action,
+        "action": action,
         "relatedThreatsWeights": relatedThreatsWeights,
         "costs": costs,
-        "RecommendationType": RecommendationType,
+        "recommendationType": recommendationType,
         // "pluginId": pluginId,
       };
 }

@@ -471,7 +471,7 @@ class GeigerApiConnector {
         NodeValueImpl('long', recommendationNodeModel.long),
       );
       await node.addOrUpdateValue(
-        NodeValueImpl('Action', recommendationNodeModel.Action),
+        NodeValueImpl('Action', recommendationNodeModel.action),
       );
       await node.addOrUpdateValue(
         NodeValueImpl('relatedThreatsWeights',
@@ -482,7 +482,7 @@ class GeigerApiConnector {
       );
       await node.addOrUpdateValue(
         NodeValueImpl(
-            'RecommendationType', recommendationNodeModel.RecommendationType),
+            'RecommendationType', recommendationNodeModel.recommendationType),
       );
       await node.addOrUpdateValue(
         NodeValueImpl('pluginId', pluginId),
