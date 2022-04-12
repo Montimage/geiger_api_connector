@@ -1,3 +1,5 @@
+# CHANGE LOG
+
 ## 0.2.7
 
 * Update with geiger_api: 0.7.7
