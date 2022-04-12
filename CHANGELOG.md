@@ -1,3 +1,8 @@
+## 0.2.7
+
+* Update with geiger_api: 0.7.7
+* Add sendDeviceRecommendation and sendUserRecommendation
+
 ## 0.2.6
 
 * Update with geiger_api: 0.7.5

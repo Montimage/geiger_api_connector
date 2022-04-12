@@ -57,23 +57,46 @@ class _MyHomePageState extends State<MyHomePage> {
   GeigerApiConnector pluginApiConnector =
       GeigerApiConnector(pluginId: montimagePluginId);
   SensorDataModel userNodeDataModel = SensorDataModel(
-      sensorId: 'mi-cyberrange-score-sensor-id',
-      name: 'MI Cyberrange Score',
-      minValue: '0',
-      maxValue: '100',
-      valueType: 'double',
-      flag: '1',
-      threatsImpact:
-          '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium');
+    sensorId: 'mi-cyberrange-score-sensor-id',
+    name: 'MI Cyberrange Score',
+    minValue: '0',
+    maxValue: '100',
+    valueType: 'double',
+    flag: '1',
+    threatsImpact:
+        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+  );
   SensorDataModel deviceNodeDataModel = SensorDataModel(
-      sensorId: 'mi-ksp-scanner-is-rooted-device',
-      name: 'Is device rooted',
-      minValue: 'false',
-      maxValue: 'true',
-      valueType: 'boolean',
-      flag: '0',
-      threatsImpact:
-          '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium');
+    sensorId: 'mi-ksp-scanner-is-rooted-device',
+    name: 'Is device rooted',
+    minValue: 'false',
+    maxValue: 'true',
+    valueType: 'boolean',
+    flag: '0',
+    threatsImpact:
+        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+  );
+  RecommendationNodeModel deviceRecommendation01 = RecommendationNodeModel(
+    recommendationId: 'my-recommendation-01',
+    short: 'This is a short description of my recommendation 01',
+    long: 'This is a long description of my description 01',
+    Action: 'geiger://my-recommendation/01',
+    relatedThreatsWeights:
+        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+    costs: 'False',
+    RecommendationType: 'Device',
+  );
+
+  RecommendationNodeModel deviceRecommendation02 = RecommendationNodeModel(
+    recommendationId: 'my-recommendation-02',
+    short: 'This is a short description of my recommendation 02',
+    long: 'This is a long description of my description 02',
+    Action: 'geiger://my-recommendation/02',
+    relatedThreatsWeights:
+        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+    costs: 'False',
+    RecommendationType: 'Device',
+  );
 
   // String masterExecutor = 'cybergeigertoolbox.geiger_toolbox;'
   //     'cybergeigertoolbox.geiger_toolbox.MainActivity;'
@@ -109,14 +132,24 @@ class _MyHomePageState extends State<MyHomePage> {
     if (ret == false) return false;
 
     // Prepare some data roots
+    // Prepare Devices data metrics node
     ret = await pluginApiConnector.prepareRoot([
-      'Device',
+      'Devices',
       pluginApiConnector.currentDeviceId!,
       montimagePluginId,
       'data',
       'metrics'
     ], '');
     if (ret == false) return false;
+    // Prepare a recommendation node
+    ret = await pluginApiConnector.prepareRoot([
+      'Devices',
+      pluginApiConnector.currentDeviceId!,
+      montimagePluginId,
+      'data',
+      'recommendations'
+    ], '');
+    // Prepare Users data metrics node
     ret = await pluginApiConnector.prepareRoot([
       'Users',
       pluginApiConnector.currentUserId!,
@@ -570,6 +603,60 @@ class _MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         child: const Text('Send a threat info to Chatbot'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // trigger/send a STORAGE_EVENT event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final bool sentData = await pluginApiConnector
+                              .sendDeviceRecommendation(deviceRecommendation01);
+                          if (sentData == false) {
+                            _showSnackBar(
+                                'Failed to send a device recommendation');
+                          } else {
+                            _showSnackBar(
+                                'A Device recommendation has been sent');
+                          }
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        child: const Text('Send the device recommendation 01'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // trigger/send a STORAGE_EVENT event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final bool sentData = await pluginApiConnector
+                              .sendDeviceRecommendation(deviceRecommendation02);
+                          if (sentData == false) {
+                            _showSnackBar(
+                                'Failed to send a device recommendation');
+                          } else {
+                            _showSnackBar(
+                                'A Device recommendation has been sent');
+                          }
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        child: const Text('Send the device recommendation 02'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),

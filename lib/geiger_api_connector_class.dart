@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
+import 'package:geiger_api_connector/recommendation_node_model.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'sensor_node_model.dart';
 
@@ -9,7 +10,7 @@ import 'plugin_event_listener.dart';
 import 'storage_event_listener.dart';
 
 class GeigerApiConnector {
-  static String version = '0.2.5';
+  static String version = '0.2.7';
   GeigerApiConnector({
     required this.pluginId,
     this.exceptionHandler,
@@ -359,7 +360,7 @@ class GeigerApiConnector {
   /// Send some device sensor data to GeigerToolbox
   Future<bool> sendDeviceSensorData(String sensorId, String value) async {
     String nodePath =
-        ':Device:$currentDeviceId:$pluginId:data:metrics:$sensorId';
+        ':Devices:$currentDeviceId:$pluginId:data:metrics:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
       node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
@@ -445,12 +446,77 @@ class GeigerApiConnector {
     }
   }
 
+  Future<bool> sendDeviceRecommendation(
+      RecommendationNodeModel recommendationNodeModel) async {
+    String rootPath =
+        ':Devices:$currentDeviceId:$pluginId:data:recommendations';
+    return await _addRecommendationNode(rootPath, recommendationNodeModel);
+  }
+
+  Future<bool> sendUserRecommendation(
+      RecommendationNodeModel recommendationNodeModel) async {
+    String rootPath = ':Users:$currentUserId:$pluginId:data:recommendations';
+    return await _addRecommendationNode(rootPath, recommendationNodeModel);
+  }
+
+  Future<bool> _addRecommendationNode(
+      String rootPath, RecommendationNodeModel recommendationNodeModel) async {
+    try {
+      Node node =
+          NodeImpl(recommendationNodeModel.recommendationId, '', rootPath);
+      await node.addOrUpdateValue(
+        NodeValueImpl('short', recommendationNodeModel.short),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('long', recommendationNodeModel.long),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('Action', recommendationNodeModel.Action),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('relatedThreatsWeights',
+            recommendationNodeModel.relatedThreatsWeights),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('costs', recommendationNodeModel.costs),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl(
+            'RecommendationType', recommendationNodeModel.RecommendationType),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('pluginId', pluginId),
+      );
+      log('A recommendation node has been created');
+      log(node.toString());
+      try {
+        await storageController!.addOrUpdate(node);
+        log('After adding a recommendation node ${recommendationNodeModel.recommendationId}');
+        return true;
+      } catch (e2, trace2) {
+        log('Failed to update Storage');
+        log(e2.toString());
+        if (exceptionHandler != null) {
+          exceptionHandler!(e2, trace2);
+        }
+        return false;
+      }
+    } catch (e, trace) {
+      log('Failed to add a recommendation node ${recommendationNodeModel.recommendationId}');
+      log(e.toString());
+      if (exceptionHandler != null) {
+        exceptionHandler!(e, trace);
+      }
+      return false;
+    }
+  }
+
   Future<bool> addUserSensorNode(SensorDataModel sensorDataModel) async {
     return await _addSensorNode(sensorDataModel, 'Users');
   }
 
   Future<bool> addDeviceSensorNode(SensorDataModel sensorDataModel) async {
-    return await _addSensorNode(sensorDataModel, 'Device');
+    return await _addSensorNode(sensorDataModel, 'Devices');
   }
 
   Future<bool> _addSensorNode(
@@ -513,7 +579,7 @@ class GeigerApiConnector {
   Future<String?> readGeigerValueOfDeviceSensor(
       String _pluginId, String sensorId) async {
     return await _readValueOfNode(
-        ':Device:$currentDeviceId:$_pluginId:data:metrics:$sensorId');
+        ':Devices:$currentDeviceId:$_pluginId:data:metrics:$sensorId');
   }
 
   Future<String?> _readValueOfNode(String nodePath) async {

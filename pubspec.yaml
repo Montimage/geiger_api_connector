@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  geiger_api: ^0.7.5
+  geiger_api: ^0.7.7
   # geiger_api:
   #   git:
   #     url: https://github.com/cyber-geiger/toolbox-communicationApi.git
