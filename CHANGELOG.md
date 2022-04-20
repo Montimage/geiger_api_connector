@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.2.8
+
+* Update with geiger_api: 0.7.8 and geiger_localstorage: 0.6.48
+
 ## 0.2.7
 
 * Update with geiger_api: 0.7.7
