@@ -154,26 +154,24 @@ packages:
   geiger_api:
     dependency: transitive
     description:
-      path: "."
-      ref: development
-      resolved-ref: e59871e50d981cfe895512e9fcb9d29bd5d42896
-      url: "https://github.com/cyber-geiger/toolbox-communicationApi.git"
-    source: git
-    version: "0.7.4"
+      name: geiger_api
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.8"
   geiger_api_connector:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.2.4"
+    version: "0.2.8"
   geiger_localstorage:
     dependency: transitive
     description:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.45"
+    version: "0.6.48"
   hex:
     dependency: transitive
     description:

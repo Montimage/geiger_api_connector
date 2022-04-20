@@ -10,7 +10,7 @@ import 'plugin_event_listener.dart';
 import 'storage_event_listener.dart';
 
 class GeigerApiConnector {
-  static String version = '0.2.7';
+  static String version = '0.2.8';
   GeigerApiConnector({
     required this.pluginId,
     this.exceptionHandler,
@@ -30,6 +30,65 @@ class GeigerApiConnector {
 
   StorageEventListener? storageListener; // Listen to Storage Change event
   bool isStorageListenerRegistered = false;
+
+  /// Get an instance of GeigerApi, to be able to start working with GeigerToolbox
+  Future<bool> connectToGeigerAPI(
+      {String? pluginExecutor, String? masterExecutor}) async {
+    log('Trying to connect to the GeigerApi');
+    log('pluginExecutor: $pluginExecutor');
+    log('masterExecutor: $masterExecutor');
+    if (pluginApi != null) {
+      log('Plugin $pluginId has been initialized');
+      return true;
+    } else {
+      try {
+        if (pluginId == GeigerApi.masterId) {
+          flushGeigerApiCache();
+          // MASTER PLUGIN
+          // log('masterExecutor: ${GeigerApi.masterExecutor}');
+          if (masterExecutor != null) {
+            GeigerApi.masterExecutor = masterExecutor;
+          }
+          // log('masterExecutor(2): ${GeigerApi.masterExecutor}');
+          pluginApi = await getGeigerApi(masterExecutor ?? '',
+              GeigerApi.masterId, Declaration.doShareData);
+          // log('masterExecutor(3): ${GeigerApi.masterExecutor}');
+          if (pluginApi != null) {
+            pluginApi!.zapState();
+            log('MasterId: ${pluginApi.hashCode}');
+            return true;
+          } else {
+            log('Failed to initialize the master plugin. Return null');
+            return false;
+          }
+        } else {
+          // EXTERNAL PLUGIN
+          // log('masterExecutor: ${GeigerApi.masterExecutor}');
+          if (masterExecutor != null) {
+            GeigerApi.masterExecutor = masterExecutor;
+          }
+          // log('masterExecutor(2): ${GeigerApi.masterExecutor}');
+          pluginApi = await getGeigerApi(
+              pluginExecutor ?? '', pluginId, Declaration.doShareData);
+          if (pluginApi != null) {
+            // pluginApi!.zapState();
+            log('pluginApi: ${pluginApi.hashCode}');
+            return true;
+          } else {
+            log('Failed to initialize the master plugin. Return null');
+            return false;
+          }
+        }
+      } catch (e, trace) {
+        log('Failed to get the GeigerAPI');
+        log(e.toString());
+        if (exceptionHandler != null) {
+          exceptionHandler!(e, trace);
+        }
+        return false;
+      }
+    }
+  }
 
   /// Close the geiger api properly
   Future<void> close() async {
@@ -74,53 +133,6 @@ class GeigerApiConnector {
         if (exceptionHandler != null) {
           exceptionHandler!(e, trace);
         }
-      }
-    }
-  }
-
-  /// Get an instance of GeigerApi, to be able to start working with GeigerToolbox
-  Future<bool> connectToGeigerAPI(
-      {String? pluginExecutor, String? masterExecutor}) async {
-    log('Trying to connect to the GeigerApi');
-    if (pluginApi != null) {
-      log('Plugin $pluginId has been initialized');
-      return true;
-    } else {
-      if (masterExecutor != null) {
-        GeigerApi.masterExecutor = masterExecutor;
-      }
-      try {
-        flushGeigerApiCache();
-        if (pluginId == GeigerApi.masterId) {
-          pluginApi = await getGeigerApi(
-              masterExecutor ?? '', pluginId, Declaration.doShareData);
-          if (pluginApi != null) {
-            pluginApi!.zapState();
-            log('MasterId: ${pluginApi.hashCode}');
-            return true;
-          } else {
-            log('Failed to initialize the master plugin. Return null');
-            return false;
-          }
-        } else {
-          pluginApi = await getGeigerApi(
-              pluginExecutor ?? '', pluginId, Declaration.doShareData);
-          if (pluginApi != null) {
-            pluginApi!.zapState();
-            log('pluginApi: ${pluginApi.hashCode}');
-            return true;
-          } else {
-            log('Failed to initialize the master plugin. Return null');
-            return false;
-          }
-        }
-      } catch (e, trace) {
-        log('Failed to get the GeigerAPI');
-        log(e.toString());
-        if (exceptionHandler != null) {
-          exceptionHandler!(e, trace);
-        }
-        return false;
       }
     }
   }
