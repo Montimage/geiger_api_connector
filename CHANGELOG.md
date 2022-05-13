@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.2.9
+
+* Update new structure of recommendation
+
 ## 0.2.8
 
 * Update with geiger_api: 0.7.8 and geiger_localstorage: 0.6.48

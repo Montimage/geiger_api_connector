@@ -40,7 +40,8 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-const String montimagePluginId = 'geiger-api-example-external-plugin-id';
+const String montimagePluginId = 'my-plugin-id-00';
+const String montimagePluginName = "Testing Plugin";
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Message> events = [];
@@ -52,10 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
   String? masterOutput;
   String? pluginOutput;
 
-  GeigerApiConnector masterApiConnector =
-      GeigerApiConnector(pluginId: GeigerApi.masterId);
-  GeigerApiConnector pluginApiConnector =
-      GeigerApiConnector(pluginId: montimagePluginId);
+  GeigerApiConnector masterApiConnector = GeigerApiConnector(
+      pluginId: GeigerApi.masterId, pluginName: montimagePluginName);
+  GeigerApiConnector pluginApiConnector = GeigerApiConnector(
+      pluginId: montimagePluginId, pluginName: montimagePluginName);
   SensorDataModel userNodeDataModel = SensorDataModel(
     sensorId: 'mi-cyberrange-score-sensor-id',
     name: 'MI Cyberrange Score',
@@ -102,12 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
   //     'cybergeigertoolbox.geiger_toolbox.MainActivity;'
   //     'TODO';
 
-  String masterExecutor = 'com.montimage.geiger_api_test;'
-      'com.montimage.geiger_api_test.MainActivity;'
+  String masterExecutor = 'com.montimage.master;'
+      'com.montimage.master.MainActivity;'
       'TODO';
 
-  String pluginExecutor = 'com.montimage.example;'
-      'com.montimage.example.MainActivity;'
+  String pluginExecutor = 'com.montimage.master;'
+      'com.montimage.master.MainActivity;'
       'TODO';
 
   Future<bool> initMasterPlugin() async {
@@ -165,8 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
     ], '');
     if (ret == false) return false;
     // write the plugin information
-    ret = await pluginApiConnector.updatePluginNode(
-        montimagePluginId, 'My Awesome Plugin', 'Montimage');
+    ret = await pluginApiConnector.updatePluginCompanyName(
+        montimagePluginId, 'Montimage');
     // Prepare some data nodes
     ret = await pluginApiConnector.addDeviceSensorNode(deviceNodeDataModel);
     if (ret == false) return false;
@@ -463,7 +464,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 : Column(
                     children: [
                       const Text(
-                        'An external plugin is running...',
+                        'Plugin $montimagePluginId is running...',
                         style: TextStyle(
                             fontSize: 14,
                             fontStyle: FontStyle.italic,
@@ -580,19 +581,17 @@ class _MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             isInProcessing = true;
                           });
-                          final bool sentData = await pluginApiConnector
-                              .sendDataNode(
-                                  ':Chatbot:sensors:$montimagePluginId:my-sensor-data',
+                          final bool sentData =
+                              await pluginApiConnector.sendDataNode(
+                                  'my-sensor-data',
+                                  ':Chatbot:sensors:$montimagePluginId',
+                                  ['category', 'isSubmitted', 'threatInfo'],
                                   [
-                                'category',
-                                'isSubmitted',
-                                'threatInfo'
-                              ],
-                                  [
-                                'Malware',
-                                'false',
-                                'This is the threat info'
-                              ]);
+                                    'Malware',
+                                    'false',
+                                    'This is the threat info'
+                                  ],
+                                  null);
                           if (sentData == false) {
                             _showSnackBar('Failed to send data to Chatbot');
                           } else {
@@ -657,6 +656,23 @@ class _MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         child: const Text('Send the device recommendation 02'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          pluginApiConnector.sendDataNode(
+                              'cffb567a-3d64-4204-a637-1da234ed25b0',
+                              ':Global:Recommendations',
+                              ['RecommendationType'],
+                              ['device'],
+                              null);
+                        },
+                        child: const Text('Change a global recommendation'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
