@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.3.0
+
+* Add plugin description
+
 ## 0.2.9
 
 * Update new structure of recommendation

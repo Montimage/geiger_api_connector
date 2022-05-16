@@ -10,7 +10,7 @@ import 'plugin_event_listener.dart';
 import 'storage_event_listener.dart';
 
 class GeigerApiConnector {
-  static String version = '0.2.9';
+  static String version = '0.3.0';
   GeigerApiConnector({
     required this.pluginId,
     required this.pluginName,
@@ -636,8 +636,8 @@ class GeigerApiConnector {
   }
 
   /// Update the information of the external plugin
-  Future<bool> updatePluginCompanyName(
-      String pluginId, String companyName) async {
+  Future<bool> updatePluginInfo(
+      String pluginId, String companyName, String description) async {
     // Prepare the plugin node
     bool ret = await prepareRoot([
       'Devices',
@@ -648,8 +648,12 @@ class GeigerApiConnector {
       return false;
     }
     // Write plugin info
-    ret = await sendDataNode(pluginId, ':Devices:${currentDeviceId!}',
-        ['name', 'company_name'], [pluginName, companyName], null);
+    ret = await sendDataNode(
+        pluginId,
+        ':Devices:${currentDeviceId!}',
+        ['name', 'company_name', 'description'],
+        [pluginName, companyName, description],
+        null);
     if (ret == false) {
       log('Failed to store plugin information');
       return false;

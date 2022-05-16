@@ -166,8 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
     ], '');
     if (ret == false) return false;
     // write the plugin information
-    ret = await pluginApiConnector.updatePluginCompanyName(
-        montimagePluginId, 'Montimage');
+    ret = await pluginApiConnector.updatePluginInfo(
+        montimagePluginId, 'Montimage', 'An awesome plugin');
     // Prepare some data nodes
     ret = await pluginApiConnector.addDeviceSensorNode(deviceNodeDataModel);
     if (ret == false) return false;
