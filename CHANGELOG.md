@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.3.1
+
+* Add description into sensor node model
+
 ## 0.3.0
 
 * Add plugin description

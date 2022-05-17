@@ -15,6 +15,7 @@ class SensorDataModel {
   SensorDataModel({
     required this.sensorId,
     required this.name,
+    required this.description,
     required this.minValue,
     required this.maxValue,
     required this.valueType,
@@ -24,6 +25,7 @@ class SensorDataModel {
 
   String sensorId;
   String name;
+  String description;
   String minValue;
   String maxValue;
   String valueType;
@@ -33,6 +35,7 @@ class SensorDataModel {
   factory SensorDataModel.fromMap(Map<String, dynamic> json) => SensorDataModel(
         sensorId: json["sensorId"],
         name: json["name"],
+        description: json["description"],
         minValue: json["minValue"],
         maxValue: json["maxValue"],
         valueType: json["valueType"],
@@ -43,6 +46,7 @@ class SensorDataModel {
   Map<String, dynamic> toMap() => {
         "sensorId": sensorId,
         "name": name,
+        "description": description,
         "minValue": minValue,
         "maxValue": maxValue,
         "valueType": valueType,

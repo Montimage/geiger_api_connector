@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   SensorDataModel userNodeDataModel = SensorDataModel(
     sensorId: 'mi-cyberrange-score-sensor-id',
     name: 'MI Cyberrange Score',
+    description: 'This is MI Cyberrange score',
     minValue: '0',
     maxValue: '100',
     valueType: 'double',
@@ -70,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   SensorDataModel deviceNodeDataModel = SensorDataModel(
     sensorId: 'mi-ksp-scanner-is-rooted-device',
     name: 'Is device rooted',
+    description: 'This is device check',
     minValue: 'false',
     maxValue: 'true',
     valueType: 'boolean',

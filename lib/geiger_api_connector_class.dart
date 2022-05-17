@@ -10,7 +10,7 @@ import 'plugin_event_listener.dart';
 import 'storage_event_listener.dart';
 
 class GeigerApiConnector {
-  static String version = '0.3.0';
+  static String version = '0.3.1';
   GeigerApiConnector({
     required this.pluginId,
     required this.pluginName,
