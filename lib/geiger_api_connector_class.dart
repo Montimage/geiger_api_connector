@@ -11,6 +11,9 @@ import 'storage_event_listener.dart';
 
 class GeigerApiConnector {
   static String version = '0.3.1';
+  static String geigerAPIVersion = '0.7.8';
+  static String geigerLocalStorageVersion = '0.6.49';
+
   GeigerApiConnector({
     required this.pluginId,
     required this.pluginName,
@@ -547,6 +550,9 @@ class GeigerApiConnector {
       Node node = NodeImpl(sensorDataModel.sensorId, '', rootPath);
       await node.addOrUpdateValue(
         NodeValueImpl('name', sensorDataModel.name),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('description', sensorDataModel.description),
       );
       await node.addOrUpdateValue(
         NodeValueImpl('minValue', sensorDataModel.minValue),

@@ -1,5 +1,11 @@
 # CHANGE LOG
 
+## 0.3.2
+
+* save description into data node
+* add static variables to request version of geiger api and geiger_localstorage
+
+
 ## 0.3.1
 
 * Add description into sensor node model

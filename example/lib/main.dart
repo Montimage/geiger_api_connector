@@ -587,11 +587,23 @@ class _MyHomePageState extends State<MyHomePage> {
                               await pluginApiConnector.sendDataNode(
                                   'my-sensor-data',
                                   ':Chatbot:sensors:$montimagePluginId',
-                                  ['category', 'isSubmitted', 'threatInfo'],
+                                  [
+                                    'category',
+                                    'description',
+                                    'fileFullPath',
+                                    'isApplication',
+                                    'isDeviceAdminThreat',
+                                    'objectName',
+                                    'virusName'
+                                  ],
                                   [
                                     'Malware',
-                                    'false',
-                                    'This is the threat info'
+                                    'critical threat detected',
+                                    'fileFullPath/applications/glume.apk',
+                                    'true',
+                                    'true',
+                                    'hijack.org',
+                                    'hijack'
                                   ],
                                   null);
                           if (sentData == false) {
