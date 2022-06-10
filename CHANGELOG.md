@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.3.3
+
+* Update with geiger_api: 0.7.9
+
 ## 0.3.2
 
 * save description into data node
