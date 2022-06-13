@@ -37,13 +37,13 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
 const String montimagePluginId = 'my-plugin-id-00';
 const String montimagePluginName = "Testing Plugin";
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   List<Message> events = [];
   String userData = '';
   String deviceData = '';
@@ -279,11 +279,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           isInProcessing = false;
                         });
                       },
-                      child: const Text('Start Master Plugin'),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.orange,
                         minimumSize: const Size.fromHeight(40),
                       ),
+                      child: const Text('Start Master Plugin'),
                     ),
                     const Text('The Master Plugin is not intialized yet!'),
                   ])
@@ -313,11 +313,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Send SCAN_PRESSED'),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Send SCAN_PRESSED'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(
@@ -328,11 +328,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             masterOutput = storageStr;
                           });
                         },
-                        child: const Text('Dump Storage'),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Dump Storage'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -345,11 +345,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             masterOutput = allEventStr;
                           });
                         },
-                        child: const Text('Show all plugin events'),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Show all plugin events'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -362,11 +362,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             masterOutput = allStorageStr;
                           });
                         },
-                        child: const Text('Show all storage events'),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Show all storage events'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -381,12 +381,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             masterOutput = 'Device sensors data: $deviceData';
                           });
                         },
-                        child: Text(
-                            'Show the received device sensor data ($deviceData)'),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: Text(
+                            'Show the received device sensor data ($deviceData)'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -401,12 +401,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             masterOutput = 'User sensors data: $userData';
                           });
                         },
-                        child: Text(
-                            'Show the received users sensor data ($userData)'),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: Text(
+                            'Show the received users sensor data ($userData)'),
                       ),
                       const Divider(),
                       const SizedBox(height: 5),
@@ -455,10 +455,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Start an External Plugin'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Start an External Plugin'),
                       ),
                       const Text('The external plugin is not initialzed yet!'),
                     ],
@@ -491,10 +491,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Send a device data'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Send a device data'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(
@@ -514,10 +514,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Send a user data'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Send a user data'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(
@@ -539,10 +539,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Send SCAN_COMPLETED event'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Send SCAN_COMPLETED event'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(
@@ -570,11 +570,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text(
-                            'Send a custom event with payload (json encoded string)'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text(
+                            'Send a custom event with payload (json encoded string)'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(
@@ -615,10 +615,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Send a threat info to Chatbot'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Send a threat info to Chatbot'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -642,10 +642,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Send the device recommendation 01'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Send the device recommendation 01'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -669,10 +669,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isInProcessing = false;
                           });
                         },
-                        child: const Text('Send the device recommendation 02'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Send the device recommendation 02'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -686,10 +686,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               ['device'],
                               null);
                         },
-                        child: const Text('Change a global recommendation'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Change a global recommendation'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -702,10 +702,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             pluginOutput = allEventStr;
                           });
                         },
-                        child: const Text('Show all plugin events'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Show all plugin events'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -718,10 +718,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             pluginOutput = allStorageStr;
                           });
                         },
-                        child: const Text('Show all storage events'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Show all storage events'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(
@@ -729,10 +729,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           pluginApiConnector.sendPluginEventType(
                               MessageType.returningControl);
                         },
-                        child: const Text('Back to the GeigerToolbox'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Back to the GeigerToolbox'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(
@@ -742,10 +742,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             isExternalPluginStarted = false;
                           });
                         },
-                        child: const Text('Disconnect'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
+                        child: const Text('Disconnect'),
                       ),
                       const Divider(),
                       const SizedBox(height: 5),

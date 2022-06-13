@@ -595,16 +595,16 @@ class GeigerApiConnector {
 
   /// Read a value of user sensor
   Future<String?> readGeigerValueOfUserSensor(
-      String _pluginId, String sensorId) async {
+      String pluginId, String sensorId) async {
     return await _readValueOfNode(
-        ':Users:$currentUserId:$_pluginId:data:metrics:$sensorId');
+        ':Users:$currentUserId:$pluginId:data:metrics:$sensorId');
   }
 
   /// Read a value of device sensor
   Future<String?> readGeigerValueOfDeviceSensor(
-      String _pluginId, String sensorId) async {
+      String pluginId, String sensorId) async {
     return await _readValueOfNode(
-        ':Devices:$currentDeviceId:$_pluginId:data:metrics:$sensorId');
+        ':Devices:$currentDeviceId:$pluginId:data:metrics:$sensorId');
   }
 
   Future<String?> _readValueOfNode(String nodePath) async {
