@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
     relatedThreatsWeights:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
     costs: 'False',
-    recommendationType: 'Device',
+    recommendationType: 'device',
   );
 
   RecommendationNodeModel deviceRecommendation02 = RecommendationNodeModel(
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
     relatedThreatsWeights:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
     costs: 'False',
-    recommendationType: 'Device',
+    recommendationType: 'device',
   );
 
   // String masterExecutor = 'cybergeigertoolbox.geiger_toolbox;'

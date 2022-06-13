@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## 0.3.4
+
+* Update with geiger_api: 0.7.8
+* Update with flutter 3.0
+
 ## 0.3.3
 
 * Update with geiger_api: 0.7.9

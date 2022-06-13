@@ -1,6 +1,6 @@
 name: geiger_api_connector
 description: A connector to GEIGER APIs
-version: 0.3.3
+version: 0.3.4
 # publish_to: none
 homepage: "https://github.com/luongnv89/geiger_api_connector"
 
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  geiger_api: ^0.7.9
+  geiger_api: 0.7.8
   # geiger_api:
   #   git:
   #     url: https://github.com/cyber-geiger/toolbox-communicationApi.git
@@ -21,7 +21,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
