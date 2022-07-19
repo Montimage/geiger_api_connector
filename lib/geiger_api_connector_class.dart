@@ -538,6 +538,148 @@ class GeigerApiConnector {
     }
   }
 
+  Future<bool> resolveDeviceRecommendation(
+      String recommendationId, String geigerValue) async {
+    return await _resolveRecommendation(
+        recommendationId, 'Devices', geigerValue);
+  }
+
+  Future<bool> resolveUserRecommendation(
+      String recommendationId, String geigerValue) async {
+    return await _resolveRecommendation(recommendationId, 'Users', geigerValue);
+  }
+
+  Future<bool> _resolveRecommendation(
+      String recommendationId, String rootType, String geigerValue) async {
+    String rootPath =
+        ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
+    String nodeId = '$recommendationId-status';
+    log('Before adding a sensor node $nodeId');
+    try {
+      Node node = NodeImpl(nodeId, '', rootPath);
+      await node.addOrUpdateValue(
+        NodeValueImpl('name', 'Recommendation status of $recommendationId'),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('description',
+            'Reflects the status of the recommendation with the indicated ID. geigerValue 0=resolved, 1=active'),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('minValue', '0'),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('maxValue', '1'),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('valueType', 'int'),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('flag', '0'),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('threatsImpact', ''),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('recommendationId', recommendationId),
+      );
+      await node.addOrUpdateValue(
+        NodeValueImpl('geigerValue', geigerValue),
+      );
+      log('A node has been created');
+      log(node.toString());
+      try {
+        await storageController!.addOrUpdate(node);
+        log('After adding a sensor node $nodeId');
+        return true;
+      } catch (e2, trace2) {
+        log('Failed to update Storage');
+        log(e2.toString());
+        if (exceptionHandler != null) {
+          exceptionHandler!(e2, trace2);
+        }
+        return false;
+      }
+    } catch (e, trace) {
+      log('Failed to add a sensor node $nodeId');
+      log(e.toString());
+      if (exceptionHandler != null) {
+        exceptionHandler!(e, trace);
+      }
+      return false;
+    }
+  }
+
+  // Future<bool> resolveDeviceRecommendation(SensorDataModel sensorDataModel,
+  //     String recommendationId, String geigerValue) async {
+  //   return await _resolveRecommendation(
+  //       sensorDataModel, 'Devices', recommendationId, geigerValue);
+  // }
+
+  // Future<bool> resolveUserRecommendation(SensorDataModel sensorDataModel,
+  //     String recommendationId, String geigerValue) async {
+  //   return await _resolveRecommendation(
+  //       sensorDataModel, 'Users', recommendationId, geigerValue);
+  // }
+
+  // Future<bool> _resolveRecommendation(SensorDataModel sensorDataModel,
+  //     String rootType, String recommendationId, String geigerValue) async {
+  //   String rootPath =
+  //       ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
+  //   String nodeId = '$recommendationId-status';
+  //   log('Before adding a sensor node $nodeId');
+  //   try {
+  //     Node node = NodeImpl(nodeId, '', rootPath);
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('name', sensorDataModel.name),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('description', sensorDataModel.description),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('minValue', sensorDataModel.minValue),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('maxValue', sensorDataModel.maxValue),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('valueType', sensorDataModel.valueType),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('flag', sensorDataModel.flag),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('threatsImpact', sensorDataModel.threatsImpact),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('recommendationId', recommendationId),
+  //     );
+  //     await node.addOrUpdateValue(
+  //       NodeValueImpl('geigerValue', geigerValue),
+  //     );
+  //     log('A node has been created');
+  //     log(node.toString());
+  //     try {
+  //       await storageController!.addOrUpdate(node);
+  //       log('After adding a sensor node $nodeId');
+  //       return true;
+  //     } catch (e2, trace2) {
+  //       log('Failed to update Storage');
+  //       log(e2.toString());
+  //       if (exceptionHandler != null) {
+  //         exceptionHandler!(e2, trace2);
+  //       }
+  //       return false;
+  //     }
+  //   } catch (e, trace) {
+  //     log('Failed to add a sensor node $nodeId');
+  //     log(e.toString());
+  //     if (exceptionHandler != null) {
+  //       exceptionHandler!(e, trace);
+  //     }
+  //     return false;
+  //   }
+  // }
+
   Future<bool> addUserSensorNode(SensorDataModel sensorDataModel) async {
     return await _addSensorNode(sensorDataModel, 'Users');
   }

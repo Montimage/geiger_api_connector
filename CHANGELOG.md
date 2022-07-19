@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.3.6
+
+* Add resolveRecommendation for completing the recommendation lifecycle
+
 ## 0.3.5
 
 * Update with geiger_api: 0.7.9

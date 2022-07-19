@@ -657,6 +657,35 @@ class MyHomePageState extends State<MyHomePage> {
                             isInProcessing = true;
                           });
                           final bool sentData = await pluginApiConnector
+                              .resolveDeviceRecommendation(
+                                  deviceRecommendation01.recommendationId, '0');
+                          if (sentData == false) {
+                            _showSnackBar(
+                                'Failed to resolve a device recommendation');
+                          } else {
+                            _showSnackBar(
+                                'A Device recommendation has been resolved');
+                          }
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                        child:
+                            const Text('Resolve the device recommendation 01'),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // trigger/send a STORAGE_EVENT event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final bool sentData = await pluginApiConnector
                               .sendDeviceRecommendation(deviceRecommendation02);
                           if (sentData == false) {
                             _showSnackBar(
