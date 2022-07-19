@@ -77,6 +77,11 @@ class GeigerApiConnector {
           if (pluginApi != null) {
             // pluginApi!.zapState();
             log('pluginApi: ${pluginApi.hashCode}');
+            log('Going to regsiter the plugin $pluginId');
+            await pluginApi!.registerPlugin();
+            log('Going to activate the plugin $pluginId');
+            await pluginApi!.activatePlugin();
+            log('The Plugin $pluginId has been activated');
             return true;
           } else {
             log('Failed to initialize the master plugin. Return null');
