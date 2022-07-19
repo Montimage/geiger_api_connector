@@ -11,12 +11,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  geiger_api: ^0.7.8
+  geiger_localstorage: ^0.6.49
+  geiger_api: ^0.7.9
   # geiger_api:
   #   git:
   #     url: https://github.com/cyber-geiger/toolbox-communicationApi.git
   #     ref: development # branch name
-  geiger_localstorage: ^0.6.49
+
 
 dev_dependencies:
   flutter_test:
