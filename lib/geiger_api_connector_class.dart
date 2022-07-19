@@ -445,6 +445,17 @@ class GeigerApiConnector {
     return true;
   }
 
+  /// Verify if a node exist
+  Future<bool> isNodeExist(String nodePath) async {
+    try {
+      await storageController!.get(nodePath);
+      return true;
+    } catch (e) {
+      // log(e.toString());
+      return false;
+    }
+  }
+
   /// Send a data node which include creating a new node and write the data
   Future<bool> sendDataNode(String nodeId, String nodePath, List<String> keys,
       List<String> values, String? owner) async {
@@ -477,10 +488,23 @@ class GeigerApiConnector {
     return await _addRecommendationNode(rootPath, recommendationNodeModel);
   }
 
+  Future<bool> isDeviceRecommendationExist(
+      String deviceRecommendationId) async {
+    String nodePath =
+        ':Devices:$currentDeviceId:$pluginId:data:recommendations:$deviceRecommendationId';
+    return await isNodeExist(nodePath);
+  }
+
   Future<bool> sendUserRecommendation(
       RecommendationNodeModel recommendationNodeModel) async {
     String rootPath = ':Users:$currentUserId:$pluginId:data:recommendations';
     return await _addRecommendationNode(rootPath, recommendationNodeModel);
+  }
+
+  Future<bool> isUserRecommendationExist(String userRecommendationId) async {
+    String nodePath =
+        ':Users:$currentDeviceId:$pluginId:data:recommendations:$userRecommendationId';
+    return await isNodeExist(nodePath);
   }
 
   Future<bool> _addRecommendationNode(

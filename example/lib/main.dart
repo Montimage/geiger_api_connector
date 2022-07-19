@@ -1,5 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' as Math;
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -181,11 +182,11 @@ class MyHomePageState extends State<MyHomePage> {
         (Message msg) async {
       await pluginApiConnector.sendDeviceSensorData(
         deviceNodeDataModel.sensorId,
-        Random().nextBool().toString(),
+        Math.Random().nextBool().toString(),
       );
       await pluginApiConnector.sendUserSensorData(
         userNodeDataModel.sensorId,
-        Random().nextInt(100).toString(),
+        Math.Random().nextInt(100).toString(),
       );
     });
     final bool regPluginListener =
@@ -579,10 +580,30 @@ class MyHomePageState extends State<MyHomePage> {
                       const SizedBox(height: 5),
                       ElevatedButton(
                         onPressed: () async {
+                          // trigger/send a SCAN_COMPLETED event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          bool chatbotNode = await pluginApiConnector.isNodeExist(
+                              ':Chatbot:sensors:$montimagePluginId:my-sensor-data');
+                          log('Chatbot node check ($montimagePluginId): $chatbotNode');
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                        child: const Text('Check the chatbot node'),
+                      ),
+                      const SizedBox(height: 5),
+                      ElevatedButton(
+                        onPressed: () async {
                           // trigger/send a STORAGE_EVENT event
                           setState(() {
                             isInProcessing = true;
                           });
+
                           final bool sentData =
                               await pluginApiConnector.sendDataNode(
                                   'my-sensor-data',
@@ -646,6 +667,28 @@ class MyHomePageState extends State<MyHomePage> {
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: const Text('Send the device recommendation 01'),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // trigger/send a STORAGE_EVENT event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final bool recom = await pluginApiConnector
+                              .isDeviceRecommendationExist(
+                                  deviceRecommendation01.recommendationId);
+                          log('Device recommendation node (${deviceRecommendation01.recommendationId}): $recom');
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                        child: const Text('Check the device recommendation 01'),
                       ),
                       const SizedBox(
                         height: 5,

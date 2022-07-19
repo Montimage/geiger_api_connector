@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.3.7
+
+* Add function to check if a recommendation node exists in local storage
+
 ## 0.3.6
 
 * Add resolveRecommendation for completing the recommendation lifecycle
