@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -182,11 +182,11 @@ class MyHomePageState extends State<MyHomePage> {
         (Message msg) async {
       await pluginApiConnector.sendDeviceSensorData(
         deviceNodeDataModel.sensorId,
-        Math.Random().nextBool().toString(),
+        math.Random().nextBool().toString(),
       );
       await pluginApiConnector.sendUserSensorData(
         userNodeDataModel.sensorId,
-        Math.Random().nextInt(100).toString(),
+        math.Random().nextInt(100).toString(),
       );
     });
     final bool regPluginListener =
