@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## 0.3.5
+
+* Update with geiger_api: 0.7.9
+* Add register and activate the plugin (required by the geiger_api: 0.7.9)
+
 ## 0.3.4
 
 * Update with geiger_api: 0.7.8
