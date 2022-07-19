@@ -29,6 +29,3 @@
 build/
 example/database
 example/GeigerApi.__MASTERPLUGIN__.state
-example/pubspec.lock
-example/windows/flutter/generated_plugins.cmake
-example/windows/flutter/generated_plugins.cmake
