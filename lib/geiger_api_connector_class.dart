@@ -10,8 +10,8 @@ import 'plugin_event_listener.dart';
 import 'storage_event_listener.dart';
 
 class GeigerApiConnector {
-  static String version = '0.3.4';
-  static String geigerAPIVersion = '0.7.8';
+  static String version = '0.3.8';
+  static String geigerAPIVersion = '0.7.9';
   static String geigerLocalStorageVersion = '0.6.49';
 
   GeigerApiConnector({
@@ -421,6 +421,11 @@ class GeigerApiConnector {
 
   /// Prepare a root node with given path
   Future<bool> prepareRoot(List<String> rootPath, String? owner) async {
+    bool checkNode = await isNodeExist(':${rootPath.join(':')}');
+    if (checkNode) {
+      log('Root path has already existed $rootPath');
+      return true;
+    }
     String currentRoot = '';
     int currentIndex = 0;
     while (currentIndex < rootPath.length) {
@@ -510,6 +515,12 @@ class GeigerApiConnector {
   Future<bool> _addRecommendationNode(
       String rootPath, RecommendationNodeModel recommendationNodeModel) async {
     try {
+      bool checkNode = await isNodeExist(
+          '$rootPath:${recommendationNodeModel.recommendationId}');
+      if (checkNode) {
+        log('Recommendation has already been sent');
+        return true;
+      }
       Node node =
           NodeImpl(recommendationNodeModel.recommendationId, '', rootPath);
       await node.addOrUpdateValue(
@@ -718,6 +729,13 @@ class GeigerApiConnector {
         ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
     log('Before adding a sensor node ${sensorDataModel.sensorId}');
     try {
+      bool checkNode =
+          await isNodeExist('$rootPath:${sensorDataModel.sensorId}');
+      if (checkNode) {
+        log('Node ${sensorDataModel.sensorId} has already existed');
+        return true;
+      }
+
       Node node = NodeImpl(sensorDataModel.sensorId, '', rootPath);
       await node.addOrUpdateValue(
         NodeValueImpl('name', sensorDataModel.name),

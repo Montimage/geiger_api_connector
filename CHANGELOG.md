@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.3.8
+
+* Check the pre-prepared node to see if it already exist
+
 ## 0.3.7
 
 * Add function to check if a recommendation node exists in local storage
