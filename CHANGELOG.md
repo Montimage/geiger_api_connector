@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.3.9
+
+* Remove `-status` from the recommendation status node -> fix the problem of creating the status node
+
 ## 0.3.8
 
 * Check the pre-prepared node to see if it already exist

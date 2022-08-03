@@ -588,10 +588,16 @@ class GeigerApiConnector {
       String recommendationId, String rootType, String geigerValue) async {
     String rootPath =
         ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
-    String nodeId = '$recommendationId-status';
-    log('Before adding a sensor node $nodeId');
+    // String nodeId = '$recommendationId-status';
+    log('Before adding a recommendation status node $recommendationId');
     try {
-      Node node = NodeImpl(nodeId, '', rootPath);
+      // bool isRootExist = await isNodeExist(rootPath);
+      // if (!isRootExist) {
+      //   log('Root $rootPath is not exist');
+      //   return false;
+      // }
+
+      Node node = NodeImpl(recommendationId, '', rootPath);
       await node.addOrUpdateValue(
         NodeValueImpl('name', 'Recommendation status of $recommendationId'),
       );
@@ -615,16 +621,17 @@ class GeigerApiConnector {
         NodeValueImpl('threatsImpact', ''),
       );
       await node.addOrUpdateValue(
-        NodeValueImpl('recommendationId', recommendationId),
-      );
-      await node.addOrUpdateValue(
         NodeValueImpl('geigerValue', geigerValue),
       );
-      log('A node has been created');
+      await node.addOrUpdateValue(
+        NodeValueImpl('recommendationId', recommendationId),
+      );
+      log('A recommendation status node has been created');
       log(node.toString());
       try {
+        log('Going to add a recommendation status node $recommendationId');
         await storageController!.addOrUpdate(node);
-        log('After adding a sensor node $nodeId');
+        log('After adding a recommendation status node $recommendationId');
         return true;
       } catch (e2, trace2) {
         log('Failed to update Storage');
@@ -635,7 +642,7 @@ class GeigerApiConnector {
         return false;
       }
     } catch (e, trace) {
-      log('Failed to add a sensor node $nodeId');
+      log('Failed to add a recommendation status node $recommendationId');
       log(e.toString());
       if (exceptionHandler != null) {
         exceptionHandler!(e, trace);
