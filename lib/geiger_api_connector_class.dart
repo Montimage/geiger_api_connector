@@ -9,8 +9,23 @@ import 'sensor_node_model.dart';
 import 'plugin_event_listener.dart';
 import 'storage_event_listener.dart';
 
+// enum DataUrgency { low, medium, high }
+
+// String dataUrgencyToString(DataUrgency urg) {
+//   switch (urg) {
+//     case DataUrgency.low:
+//       return 'low';
+//     case DataUrgency.medium:
+//       return 'medium';
+//     case DataUrgency.high:
+//       return 'high';
+//     default:
+//       return 'low';
+//   }
+// }
+
 class GeigerApiConnector {
-  static String version = '0.3.8';
+  static String version = '0.4.0';
   static String geigerAPIVersion = '0.7.9';
   static String geigerLocalStorageVersion = '0.6.49';
 
@@ -379,12 +394,19 @@ class GeigerApiConnector {
   }
 
   /// Send some device sensor data to GeigerToolbox
-  Future<bool> sendDeviceSensorData(String sensorId, String value) async {
+  Future<bool> sendDeviceSensorData(String sensorId, String value,
+      {String? description, String? urgency}) async {
     String nodePath =
         ':Devices:$currentDeviceId:$pluginId:data:metrics:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
       node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
+      if (description != null) {
+        node.addOrUpdateValue(NodeValueImpl('description', description));
+      }
+      if (urgency != null) {
+        node.addOrUpdateValue(NodeValueImpl('urgency', urgency));
+      }
       await storageController!.addOrUpdate(node);
       log('Updated node: ');
       log(node.toString());
@@ -400,11 +422,18 @@ class GeigerApiConnector {
   }
 
   /// Send some user sensor data to GeigerToolbox
-  Future<bool> sendUserSensorData(String sensorId, String value) async {
+  Future<bool> sendUserSensorData(String sensorId, String value,
+      {String? description, String? urgency}) async {
     String nodePath = ':Users:$currentUserId:$pluginId:data:metrics:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
       node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
+      if (description != null) {
+        node.addOrUpdateValue(NodeValueImpl('description', description));
+      }
+      if (urgency != null) {
+        node.addOrUpdateValue(NodeValueImpl('urgency', urgency));
+      }
       await storageController!.addOrUpdate(node);
       log('Updated node: ');
       log(node.toString());
@@ -618,6 +647,9 @@ class GeigerApiConnector {
         NodeValueImpl('flag', '0'),
       );
       await node.addOrUpdateValue(
+        NodeValueImpl('urgency', 'low'),
+      );
+      await node.addOrUpdateValue(
         NodeValueImpl('threatsImpact', ''),
       );
       await node.addOrUpdateValue(
@@ -763,6 +795,9 @@ class GeigerApiConnector {
         NodeValueImpl('flag', sensorDataModel.flag),
       );
       await node.addOrUpdateValue(
+        NodeValueImpl('urgency', sensorDataModel.urgency),
+      );
+      await node.addOrUpdateValue(
         NodeValueImpl('threatsImpact', sensorDataModel.threatsImpact),
       );
       log('A node has been created');
@@ -790,24 +825,24 @@ class GeigerApiConnector {
   }
 
   /// Read a value of user sensor
-  Future<String?> readGeigerValueOfUserSensor(
-      String pluginId, String sensorId) async {
-    return await _readValueOfNode(
-        ':Users:$currentUserId:$pluginId:data:metrics:$sensorId');
+  Future<String?> readUserSensorData(
+      String pluginId, String sensorId, String key) async {
+    return await _readValueNode(
+        ':Users:$currentUserId:$pluginId:data:metrics:$sensorId', key);
   }
 
   /// Read a value of device sensor
-  Future<String?> readGeigerValueOfDeviceSensor(
-      String pluginId, String sensorId) async {
-    return await _readValueOfNode(
-        ':Devices:$currentDeviceId:$pluginId:data:metrics:$sensorId');
+  Future<String?> readDeviceSensorData(
+      String pluginId, String sensorId, String key) async {
+    return await _readValueNode(
+        ':Devices:$currentDeviceId:$pluginId:data:metrics:$sensorId', key);
   }
 
-  Future<String?> _readValueOfNode(String nodePath) async {
+  Future<String?> _readValueNode(String nodePath, String key) async {
     log('Going to get value of node at $nodePath');
     try {
       Node node = await storageController!.get(nodePath);
-      var temp = await node.getValue('GEIGERvalue');
+      var temp = await node.getValue(key);
       return temp?.getValue('en');
     } catch (e, trace) {
       log('Failed to get value of node at $nodePath');

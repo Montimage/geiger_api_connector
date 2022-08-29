@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## 0.4.0
+
+* Add custom description and urgency when updating node
+* Modify the reading data from the node by adding the "key" to be more flexible
+
 ## 0.3.9
 
 * Remove `-status` from the recommendation status node -> fix the problem of creating the status node

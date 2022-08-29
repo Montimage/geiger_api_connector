@@ -21,6 +21,7 @@ class SensorDataModel {
     required this.valueType,
     required this.flag,
     required this.threatsImpact,
+    required this.urgency,
   });
 
   String sensorId;
@@ -31,6 +32,7 @@ class SensorDataModel {
   String valueType;
   String flag;
   String threatsImpact;
+  String urgency;
 
   factory SensorDataModel.fromMap(Map<String, dynamic> json) => SensorDataModel(
         sensorId: json["sensorId"],
@@ -41,6 +43,7 @@ class SensorDataModel {
         valueType: json["valueType"],
         flag: json["flag"],
         threatsImpact: json["threatsImpact"],
+        urgency: json["urgency"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -52,5 +55,6 @@ class SensorDataModel {
         "valueType": valueType,
         "flag": flag,
         "threatsImpact": threatsImpact,
+        "urgency": urgency,
       };
 }

@@ -66,6 +66,7 @@ class MyHomePageState extends State<MyHomePage> {
     maxValue: '100',
     valueType: 'double',
     flag: '1',
+    urgency: "high",
     threatsImpact:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
   );
@@ -77,6 +78,7 @@ class MyHomePageState extends State<MyHomePage> {
     maxValue: 'true',
     valueType: 'boolean',
     flag: '0',
+    urgency: "high",
     threatsImpact:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
   );
@@ -123,7 +125,7 @@ class MyHomePageState extends State<MyHomePage> {
     final bool regPluginListener =
         await masterApiConnector.registerPluginListener();
     final bool regStorageListener =
-        await masterApiConnector.registerStorageListener();
+        await masterApiConnector.registerStorageListener(searchPath: ':Device');
     isMasterStarted = true;
     return regPluginListener && regStorageListener;
   }
@@ -374,11 +376,24 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          final String? sensorData = await masterApiConnector
-                              .readGeigerValueOfDeviceSensor(montimagePluginId,
-                                  deviceNodeDataModel.sensorId);
+                          final String? geigerValue =
+                              await masterApiConnector.readDeviceSensorData(
+                                  montimagePluginId,
+                                  deviceNodeDataModel.sensorId,
+                                  'GEIGERvalue');
+                          final String? valueDescription =
+                              await masterApiConnector.readDeviceSensorData(
+                                  montimagePluginId,
+                                  deviceNodeDataModel.sensorId,
+                                  'description');
+                          final String? dataUrgency =
+                              await masterApiConnector.readDeviceSensorData(
+                                  montimagePluginId,
+                                  deviceNodeDataModel.sensorId,
+                                  'urgency');
                           setState(() {
-                            deviceData = sensorData ?? 'null';
+                            deviceData =
+                                '$geigerValue -$dataUrgency - $valueDescription';
                             masterOutput = 'Device sensors data: $deviceData';
                           });
                         },
@@ -394,11 +409,24 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          final String? sensorData = await masterApiConnector
-                              .readGeigerValueOfUserSensor(montimagePluginId,
-                                  userNodeDataModel.sensorId);
+                          final String? geigerValue =
+                              await masterApiConnector.readUserSensorData(
+                                  montimagePluginId,
+                                  userNodeDataModel.sensorId,
+                                  'GEIGERvalue');
+                          final String? valueDescription =
+                              await masterApiConnector.readUserSensorData(
+                                  montimagePluginId,
+                                  userNodeDataModel.sensorId,
+                                  'description');
+                          final String? dataUrgency =
+                              await masterApiConnector.readUserSensorData(
+                                  montimagePluginId,
+                                  userNodeDataModel.sensorId,
+                                  'urgency');
                           setState(() {
-                            userData = sensorData ?? 'null';
+                            userData =
+                                '$geigerValue - $dataUrgency - $valueDescription';
                             masterOutput = 'User sensors data: $userData';
                           });
                         },
@@ -481,7 +509,9 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                           final bool dataSent =
                               await pluginApiConnector.sendDeviceSensorData(
-                                  deviceNodeDataModel.sensorId, "true");
+                                  deviceNodeDataModel.sensorId, "true",
+                                  description: "This is a custom description",
+                                  urgency: 'high');
                           if (dataSent == false) {
                             _showSnackBar(
                                 'Failed to send a device sensor data');
@@ -505,7 +535,9 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                           final bool dataSent =
                               await pluginApiConnector.sendUserSensorData(
-                                  userNodeDataModel.sensorId, "50");
+                                  userNodeDataModel.sensorId, "50",
+                                  description: 'This is a custom description',
+                                  urgency: 'medium');
                           if (dataSent == false) {
                             _showSnackBar('Failed to send a user sensor data');
                           } else {
