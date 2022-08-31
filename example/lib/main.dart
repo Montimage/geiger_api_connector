@@ -286,7 +286,7 @@ class MyHomePageState extends State<MyHomePage> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.orange,
+                        backgroundColor: Colors.orange,
                         minimumSize: const Size.fromHeight(40),
                       ),
                       child: const Text('Start Master Plugin'),
@@ -320,7 +320,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: const Text('Send SCAN_PRESSED'),
@@ -335,7 +335,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: const Text('Dump Storage'),
@@ -352,7 +352,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: const Text('Show all plugin events'),
@@ -369,7 +369,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: const Text('Show all storage events'),
@@ -401,7 +401,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: Text(
@@ -434,7 +434,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
+                          backgroundColor: Colors.orange,
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: Text(
