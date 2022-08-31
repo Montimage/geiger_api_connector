@@ -17,45 +17,47 @@ String recommendationNodeModelToMap(
 
 class RecommendationNodeModel {
   RecommendationNodeModel({
-    required this.recommendationId,
+    required this.sensorId,
     required this.short,
     required this.long,
     required this.action,
     required this.relatedThreatsWeights,
     required this.costs,
     required this.recommendationType,
+    // required this.createdDate,
     // required this.pluginId,
   });
 
-  String recommendationId;
+  String sensorId;
   String short;
   String long;
   String action;
   String relatedThreatsWeights;
   String costs;
   String recommendationType;
+  // String createdDate;
   // String pluginId;
 
   factory RecommendationNodeModel.fromMap(Map<String, dynamic> json) =>
       RecommendationNodeModel(
-        recommendationId: json["recommendationId"],
+        sensorId: json["sensorId"],
         short: json["short"],
         long: json["long"],
         action: json["Action"],
         relatedThreatsWeights: json["relatedThreatsWeights"],
         costs: json["costs"],
         recommendationType: json["RecommendationType"],
-        // pluginId: json["pluginId"],
+        // createdDate: json["createdDate"],
       );
 
   Map<String, dynamic> toMap() => {
-        "recommendationId": recommendationId,
+        "sensorId": sensorId,
         "short": short,
         "long": long,
         "action": action,
         "relatedThreatsWeights": relatedThreatsWeights,
         "costs": costs,
         "recommendationType": recommendationType,
-        // "pluginId": pluginId,
+        // "createdDate": createdDate,
       };
 }

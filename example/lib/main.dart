@@ -6,6 +6,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:geiger_api_connector/geiger_api_connector.dart';
+import 'package:uuid/uuid.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,8 +83,9 @@ class MyHomePageState extends State<MyHomePage> {
     threatsImpact:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
   );
+  String deviceRecommendation01Id = const Uuid().v4();
   RecommendationNodeModel deviceRecommendation01 = RecommendationNodeModel(
-    recommendationId: 'my-recommendation-01',
+    sensorId: 'mi-ksp-scanner-is-rooted-device',
     short: 'This is a short description of my recommendation 01',
     long: 'This is a long description of my description 01',
     action: 'geiger://my-recommendation/01',
@@ -92,9 +94,9 @@ class MyHomePageState extends State<MyHomePage> {
     costs: 'False',
     recommendationType: 'device',
   );
-
+  String deviceRecommendation02Id = const Uuid().v4();
   RecommendationNodeModel deviceRecommendation02 = RecommendationNodeModel(
-    recommendationId: 'my-recommendation-02',
+    sensorId: 'mi-ksp-scanner-is-rooted-device',
     short: 'This is a short description of my recommendation 02',
     long: 'This is a long description of my description 02',
     action: 'geiger://my-recommendation/02',
@@ -609,70 +611,70 @@ class MyHomePageState extends State<MyHomePage> {
                         child: const Text(
                             'Send a custom event with payload (json encoded string)'),
                       ),
-                      const SizedBox(height: 5),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // trigger/send a SCAN_COMPLETED event
-                          setState(() {
-                            isInProcessing = true;
-                          });
-                          bool chatbotNode = await pluginApiConnector.isNodeExist(
-                              ':Chatbot:sensors:$montimagePluginId:my-sensor-data');
-                          log('Chatbot node check ($montimagePluginId): $chatbotNode');
-                          setState(() {
-                            isInProcessing = false;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
-                        ),
-                        child: const Text('Check the chatbot node'),
-                      ),
-                      const SizedBox(height: 5),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // trigger/send a STORAGE_EVENT event
-                          setState(() {
-                            isInProcessing = true;
-                          });
+                      // const SizedBox(height: 5),
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     // trigger/send a SCAN_COMPLETED event
+                      //     setState(() {
+                      //       isInProcessing = true;
+                      //     });
+                      //     bool chatbotNode = await pluginApiConnector.isNodeExist(
+                      //         ':Chatbot:sensors:$montimagePluginId:my-sensor-data');
+                      //     log('Chatbot node check ($montimagePluginId): $chatbotNode');
+                      //     setState(() {
+                      //       isInProcessing = false;
+                      //     });
+                      //   },
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size.fromHeight(40),
+                      //   ),
+                      //   child: const Text('Check the chatbot node'),
+                      // ),
+                      // const SizedBox(height: 5),
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     // trigger/send a STORAGE_EVENT event
+                      //     setState(() {
+                      //       isInProcessing = true;
+                      //     });
 
-                          final bool sentData =
-                              await pluginApiConnector.sendDataNode(
-                                  'my-sensor-data',
-                                  ':Chatbot:sensors:$montimagePluginId',
-                                  [
-                                    'category',
-                                    'description',
-                                    'fileFullPath',
-                                    'isApplication',
-                                    'isDeviceAdminThreat',
-                                    'objectName',
-                                    'virusName'
-                                  ],
-                                  [
-                                    'Malware',
-                                    'critical threat detected',
-                                    'fileFullPath/applications/glume.apk',
-                                    'true',
-                                    'true',
-                                    'hijack.org',
-                                    'hijack'
-                                  ],
-                                  null);
-                          if (sentData == false) {
-                            _showSnackBar('Failed to send data to Chatbot');
-                          } else {
-                            _showSnackBar('Data has been sent to Chatbot');
-                          }
-                          setState(() {
-                            isInProcessing = false;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
-                        ),
-                        child: const Text('Send a threat info to Chatbot'),
-                      ),
+                      //     final bool sentData =
+                      //         await pluginApiConnector.sendDataNode(
+                      //             'my-sensor-data',
+                      //             ':Chatbot:sensors:$montimagePluginId',
+                      //             [
+                      //               'category',
+                      //               'description',
+                      //               'fileFullPath',
+                      //               'isApplication',
+                      //               'isDeviceAdminThreat',
+                      //               'objectName',
+                      //               'virusName'
+                      //             ],
+                      //             [
+                      //               'Malware',
+                      //               'critical threat detected',
+                      //               'fileFullPath/applications/glume.apk',
+                      //               'true',
+                      //               'true',
+                      //               'hijack.org',
+                      //               'hijack'
+                      //             ],
+                      //             null);
+                      //     if (sentData == false) {
+                      //       _showSnackBar('Failed to send data to Chatbot');
+                      //     } else {
+                      //       _showSnackBar('Data has been sent to Chatbot');
+                      //     }
+                      //     setState(() {
+                      //       isInProcessing = false;
+                      //     });
+                      //   },
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size.fromHeight(40),
+                      //   ),
+                      //   child: const Text('Send a threat info to Chatbot'),
+                      // ),
                       const SizedBox(
                         height: 5,
                       ),
@@ -682,8 +684,11 @@ class MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             isInProcessing = true;
                           });
-                          final bool sentData = await pluginApiConnector
-                              .sendDeviceRecommendation(deviceRecommendation01);
+                          final bool sentData =
+                              await pluginApiConnector.sendRecommendation(
+                            "Devices",
+                            deviceRecommendation01,
+                          );
                           if (sentData == false) {
                             _showSnackBar(
                                 'Failed to send a device recommendation');
@@ -709,10 +714,10 @@ class MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             isInProcessing = true;
                           });
-                          final bool recom = await pluginApiConnector
-                              .isDeviceRecommendationExist(
-                                  deviceRecommendation01.recommendationId);
-                          log('Device recommendation node (${deviceRecommendation01.recommendationId}): $recom');
+                          final bool recom =
+                              await pluginApiConnector.isRecommendationExist(
+                                  "Devices", deviceRecommendation01Id);
+                          log('Device recommendation node $deviceRecommendation01Id): $recom');
                           setState(() {
                             isInProcessing = false;
                           });
@@ -731,9 +736,9 @@ class MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             isInProcessing = true;
                           });
-                          final bool sentData = await pluginApiConnector
-                              .resolveDeviceRecommendation(
-                                  deviceRecommendation01.recommendationId, '0');
+                          final bool sentData =
+                              await pluginApiConnector.resolveRecommendation(
+                                  'Devices', deviceRecommendation01Id, '0');
                           if (sentData == false) {
                             _showSnackBar(
                                 'Failed to resolve a device recommendation');
@@ -760,8 +765,11 @@ class MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             isInProcessing = true;
                           });
-                          final bool sentData = await pluginApiConnector
-                              .sendDeviceRecommendation(deviceRecommendation02);
+                          final bool sentData =
+                              await pluginApiConnector.sendRecommendation(
+                            "Devices",
+                            deviceRecommendation02,
+                          );
                           if (sentData == false) {
                             _showSnackBar(
                                 'Failed to send a device recommendation');

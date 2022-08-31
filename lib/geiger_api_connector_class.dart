@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_api_connector/recommendation_node_model.dart';
+import 'package:geiger_api_connector/utils.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'sensor_node_model.dart';
 
@@ -78,6 +79,7 @@ class GeigerApiConnector {
             return true;
           } else {
             log('Failed to initialize the master plugin. Return null');
+            await close();
             return false;
           }
         } else {
@@ -100,12 +102,14 @@ class GeigerApiConnector {
             return true;
           } else {
             log('Failed to initialize the master plugin. Return null');
+            await close();
             return false;
           }
         }
       } catch (e, trace) {
         log('Failed to get the GeigerAPI');
         log(e.toString());
+        await close();
         if (exceptionHandler != null) {
           exceptionHandler!(e, trace);
         }
@@ -150,6 +154,7 @@ class GeigerApiConnector {
         await pluginApi!.zapState();
         await pluginApi!.close();
         pluginListener = null;
+        pluginApi = null;
         log('[close] The GeigerAPI has been closed');
       } catch (e, trace) {
         log('[close] Failed to close the GeigerAPI');
@@ -181,6 +186,7 @@ class GeigerApiConnector {
         return await updateCurrentIds();
       } catch (e, trace) {
         log('Failed to connect to the GeigerStorage');
+        await close();
         log(e.toString());
         if (exceptionHandler != null) {
           exceptionHandler!(e, trace);
@@ -407,6 +413,12 @@ class GeigerApiConnector {
       if (urgency != null) {
         node.addOrUpdateValue(NodeValueImpl('urgency', urgency));
       }
+
+      // if (recommendationId != null) {
+      //   node.addOrUpdateValue(
+      //     NodeValueImpl('currentRecommendationId', recommendationId),
+      //   );
+      // }
       await storageController!.addOrUpdate(node);
       log('Updated node: ');
       log(node.toString());
@@ -434,12 +446,40 @@ class GeigerApiConnector {
       if (urgency != null) {
         node.addOrUpdateValue(NodeValueImpl('urgency', urgency));
       }
+
+      // if (recommendationId != null) {
+      //   node.addOrUpdateValue(
+      //     NodeValueImpl('currentRecommendationId', recommendationId),
+      //   );
+      // }
       await storageController!.addOrUpdate(node);
       log('Updated node: ');
       log(node.toString());
       return true;
     } catch (e, trace) {
       log('Failed to send a data node $nodePath');
+      log(e.toString());
+      if (exceptionHandler != null) {
+        exceptionHandler!(e, trace);
+      }
+      return false;
+    }
+  }
+
+  /// Update a node value
+  Future<bool> updateNodeValue(
+      String nodePath, String key, String value) async {
+    try {
+      Node node = await storageController!.get(nodePath);
+      node.addOrUpdateValue(
+        NodeValueImpl(key, value),
+      );
+      await storageController!.addOrUpdate(node);
+      log('Updated node: ');
+      log(node.toString());
+      return true;
+    } catch (e, trace) {
+      log('Failed to update node $nodePath');
       log(e.toString());
       if (exceptionHandler != null) {
         exceptionHandler!(e, trace);
@@ -515,45 +555,43 @@ class GeigerApiConnector {
     }
   }
 
-  Future<bool> sendDeviceRecommendation(
-      RecommendationNodeModel recommendationNodeModel) async {
-    String rootPath =
-        ':Devices:$currentDeviceId:$pluginId:data:recommendations';
-    return await _addRecommendationNode(rootPath, recommendationNodeModel);
+  Future<bool> isRecommendationExist(String rootType, String sensorId) async {
+    String dataNodePath =
+        ':$rootType:${rootType == 'Users' ? '$currentUserId' : '$currentDeviceId'}:$pluginId:data:metrics:$sensorId';
+    String? currentRecommendationId =
+        await _readValueNode(dataNodePath, 'currentRecommendationId');
+    if (currentRecommendationId != null && currentRecommendationId.isNotEmpty) {
+      String recPath =
+          ':$rootType:${rootType == 'Users' ? '$currentUserId' : '$currentDeviceId'}:$pluginId:data:recommendations:$currentRecommendationId';
+      return await isNodeExist(recPath);
+    }
+    return false;
   }
 
-  Future<bool> isDeviceRecommendationExist(
-      String deviceRecommendationId) async {
-    String nodePath =
-        ':Devices:$currentDeviceId:$pluginId:data:recommendations:$deviceRecommendationId';
-    return await isNodeExist(nodePath);
-  }
-
-  Future<bool> sendUserRecommendation(
-      RecommendationNodeModel recommendationNodeModel) async {
-    String rootPath = ':Users:$currentUserId:$pluginId:data:recommendations';
-    return await _addRecommendationNode(rootPath, recommendationNodeModel);
-  }
-
-  Future<bool> isUserRecommendationExist(String userRecommendationId) async {
-    String nodePath =
-        ':Users:$currentDeviceId:$pluginId:data:recommendations:$userRecommendationId';
-    return await isNodeExist(nodePath);
-  }
-
-  Future<bool> _addRecommendationNode(
-      String rootPath, RecommendationNodeModel recommendationNodeModel) async {
+  /// Add a new recommendation
+  /// - Check if the data node has already a recommendation -> not send a new one
+  /// - if the data node does not have a recommendation, or the currentRecommendationId = '', then send a new once
+  Future<bool> sendRecommendation(
+      String rootType, RecommendationNodeModel recommendationNodeModel) async {
+    String dataRoot =
+        ':$rootType:${rootType == 'Users' ? '$currentUserId' : '$currentDeviceId'}:$pluginId:data';
+    String dataNodeRootPath =
+        '$dataRoot:metrics:${recommendationNodeModel.sensorId}';
+    String? currentRecommendationId =
+        await _readValueNode(dataNodeRootPath, 'currentRecommendationId');
+    if (currentRecommendationId != null && currentRecommendationId.isNotEmpty) {
+      log('A recommendation has been sent and unresolved $currentRecommendationId. Do not send a new once');
+      return true;
+    }
+    log('Going to send a new recommendation');
+    String recommendationRootPath = '$dataRoot:recommendations';
+    String recommendationId = getUniqueId();
+    String createdDate = DateTime.now().toIso8601String();
     try {
-      bool checkNode = await isNodeExist(
-          '$rootPath:${recommendationNodeModel.recommendationId}');
-      if (checkNode) {
-        log('Recommendation has already been sent');
-        return true;
-      }
-      Node node =
-          NodeImpl(recommendationNodeModel.recommendationId, '', rootPath);
+      Node node = NodeImpl(recommendationId, '', recommendationRootPath);
       await node.addOrUpdateValue(
-        NodeValueImpl('short', recommendationNodeModel.short),
+        NodeValueImpl(
+            'short', '${recommendationNodeModel.short} - $createdDate'),
       );
       await node.addOrUpdateValue(
         NodeValueImpl('long', recommendationNodeModel.long),
@@ -578,11 +616,18 @@ class GeigerApiConnector {
       await node.addOrUpdateValue(
         NodeValueImpl('pluginName', pluginName),
       );
+
+      await node.addOrUpdateValue(
+        NodeValueImpl('createdDate', createdDate),
+      );
+
       log('A recommendation node has been created');
       log(node.toString());
       try {
         await storageController!.addOrUpdate(node);
-        log('After adding a recommendation node ${recommendationNodeModel.recommendationId}');
+        log('After adding a recommendation node $recommendationId');
+        updateNodeValue(
+            dataNodeRootPath, 'currentRecommendationId', recommendationId);
         return true;
       } catch (e2, trace2) {
         log('Failed to update Storage');
@@ -593,7 +638,7 @@ class GeigerApiConnector {
         return false;
       }
     } catch (e, trace) {
-      log('Failed to add a recommendation node ${recommendationNodeModel.recommendationId}');
+      log('Failed to add a recommendation node $recommendationId');
       log(e.toString());
       if (exceptionHandler != null) {
         exceptionHandler!(e, trace);
@@ -602,23 +647,22 @@ class GeigerApiConnector {
     }
   }
 
-  Future<bool> resolveDeviceRecommendation(
-      String recommendationId, String geigerValue) async {
-    return await _resolveRecommendation(
-        recommendationId, 'Devices', geigerValue);
-  }
-
-  Future<bool> resolveUserRecommendation(
-      String recommendationId, String geigerValue) async {
-    return await _resolveRecommendation(recommendationId, 'Users', geigerValue);
-  }
-
-  Future<bool> _resolveRecommendation(
-      String recommendationId, String rootType, String geigerValue) async {
+  /// Resolve a recommendation
+  /// - Get the sensor node with
+  /// - Update the currentRecommendationId of the sensor node to be empty
+  /// - Create a recommendation status node
+  Future<bool> resolveRecommendation(
+      String rootType, String sensorId, String geigerValue) async {
     String rootPath =
         ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
-    // String nodeId = '$recommendationId-status';
-    log('Before adding a recommendation status node $recommendationId');
+    String? currentRecommendationId =
+        await _readValueNode('$rootPath:$sensorId', 'currentRecommendationId');
+    if (currentRecommendationId == null || currentRecommendationId.isEmpty) {
+      log('Cannot find the recommendation for the sensor data: $sensorId');
+      return false;
+    }
+
+    log('Before adding a recommendation status node $currentRecommendationId');
     try {
       // bool isRootExist = await isNodeExist(rootPath);
       // if (!isRootExist) {
@@ -626,9 +670,10 @@ class GeigerApiConnector {
       //   return false;
       // }
 
-      Node node = NodeImpl(recommendationId, '', rootPath);
+      Node node = NodeImpl(currentRecommendationId, '', rootPath);
       await node.addOrUpdateValue(
-        NodeValueImpl('name', 'Recommendation status of $recommendationId'),
+        NodeValueImpl(
+            'name', 'Recommendation status of $currentRecommendationId'),
       );
       await node.addOrUpdateValue(
         NodeValueImpl('description',
@@ -656,15 +701,26 @@ class GeigerApiConnector {
         NodeValueImpl('geigerValue', geigerValue),
       );
       await node.addOrUpdateValue(
-        NodeValueImpl('recommendationId', recommendationId),
+        NodeValueImpl('recommendationId', currentRecommendationId),
       );
       log('A recommendation status node has been created');
       log(node.toString());
       try {
-        log('Going to add a recommendation status node $recommendationId');
+        log('Going to add a recommendation status node $currentRecommendationId');
         await storageController!.addOrUpdate(node);
-        log('After adding a recommendation status node $recommendationId');
-        return true;
+        log('After adding a recommendation status node $currentRecommendationId');
+        log('Going to update the sensor node');
+        try {
+          await updateNodeValue(
+              '$rootPath:$sensorId', 'currentRecommendationId', '');
+          return true;
+        } catch (e3) {
+          log('Failed to update the sensor node');
+          log(
+            e3.toString(),
+          );
+          return false;
+        }
       } catch (e2, trace2) {
         log('Failed to update Storage');
         log(e2.toString());
@@ -674,7 +730,7 @@ class GeigerApiConnector {
         return false;
       }
     } catch (e, trace) {
-      log('Failed to add a recommendation status node $recommendationId');
+      log('Failed to add a recommendation status node $currentRecommendationId');
       log(e.toString());
       if (exceptionHandler != null) {
         exceptionHandler!(e, trace);
@@ -896,5 +952,10 @@ class GeigerApiConnector {
       return false;
     }
     return true;
+  }
+
+  /// Open the Geiger Toolbox
+  Future<bool> openGeigerToolbox() async {
+    return await sendPluginEventType(MessageType.returningControl);
   }
 }
