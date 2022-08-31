@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:geiger_api_connector/geiger_api_connector.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:geiger_api_connector/geiger_api_connector.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

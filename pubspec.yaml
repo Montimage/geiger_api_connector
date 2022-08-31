@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   geiger_localstorage: ^0.6.49
   geiger_api: ^0.7.9
+  uuid: ^3.0.6
 
   # geiger_api:
   #   git:
