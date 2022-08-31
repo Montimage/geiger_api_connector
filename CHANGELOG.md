@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.1
+
+* Update the sensor data node and the recommendation lifecycle
+
 ## 0.4.0
 
 * Add custom description and urgency when updating node

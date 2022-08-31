@@ -26,7 +26,7 @@ import 'storage_event_listener.dart';
 // }
 
 class GeigerApiConnector {
-  static String version = '0.4.0';
+  static String version = '0.4.1';
   static String geigerAPIVersion = '0.7.9';
   static String geigerLocalStorageVersion = '0.6.49';
 
