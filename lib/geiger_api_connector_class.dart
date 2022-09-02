@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
+// ignore: depend_on_referenced_packages
+import 'package:geiger_localstorage/geiger_localstorage.dart';
+
 import 'package:geiger_api_connector/recommendation_node_model.dart';
 import 'package:geiger_api_connector/utils.dart';
-import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'sensor_node_model.dart';
 
 import 'plugin_event_listener.dart';
+import 'sensor_node_model.dart';
 import 'storage_event_listener.dart';
 
 // enum DataUrgency { low, medium, high }
@@ -26,9 +28,9 @@ import 'storage_event_listener.dart';
 // }
 
 class GeigerApiConnector {
-  static String version = '0.4.1';
-  static String geigerAPIVersion = '0.7.9';
-  static String geigerLocalStorageVersion = '0.6.49';
+  static String version = '0.4.2';
+  static String geigerAPIVersion = '0.8.0';
+  static String geigerLocalStorageVersion = '0.8.0';
 
   GeigerApiConnector({
     required this.pluginId,
@@ -178,7 +180,7 @@ class GeigerApiConnector {
     log('Trying to connect to the GeigerStorage');
     if (storageController != null) {
       log('Plugin $pluginId has already connected to the GeigerStorage (${storageController.hashCode})');
-      return true;
+      return await updateCurrentIds();
     } else {
       try {
         storageController = pluginApi!.storage;

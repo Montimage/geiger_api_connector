@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.2
+
+* Update with geiger_api: 0.8.0
+
 ## 0.4.1
 
 * Update the sensor data node and the recommendation lifecycle

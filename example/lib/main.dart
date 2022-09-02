@@ -111,8 +111,8 @@ class MyHomePageState extends State<MyHomePage> {
   //     'cybergeigertoolbox.geiger_toolbox.MainActivity;'
   //     'TODO';
 
-  String masterExecutor = 'com.montimage.master;'
-      'com.montimage.master.MainActivity;'
+  String masterExecutor = 'cybergeigertoolbox.geiger_toolbox;'
+      'cybergeigertoolbox.geiger_toolbox.MainActivity;'
       'TODO';
 
   String pluginExecutor = 'com.montimage.master;'
