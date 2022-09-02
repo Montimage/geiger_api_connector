@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
-// ignore: depend_on_referenced_packages
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import 'package:geiger_api_connector/recommendation_node_model.dart';
