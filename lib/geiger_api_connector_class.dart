@@ -27,7 +27,7 @@ import 'storage_event_listener.dart';
 // }
 
 class GeigerApiConnector {
-  static String version = '0.4.2';
+  static String version = '0.4.3';
   static String geigerAPIVersion = '0.8.0';
   static String geigerLocalStorageVersion = '0.8.0';
 
@@ -490,7 +490,7 @@ class GeigerApiConnector {
   }
 
   /// Prepare a root node with given path
-  Future<bool> prepareRoot(List<String> rootPath, String? owner) async {
+  Future<bool> prepareRoot(List<String> rootPath) async {
     bool checkNode = await isNodeExist(':${rootPath.join(':')}');
     if (checkNode) {
       log('Root path has already existed $rootPath');
@@ -501,7 +501,7 @@ class GeigerApiConnector {
     while (currentIndex < rootPath.length) {
       try {
         await storageController!.addOrUpdate(
-          NodeImpl(rootPath[currentIndex], owner ?? '',
+          NodeImpl(rootPath[currentIndex], pluginId,
               currentRoot == '' ? ':' : currentRoot, Visibility.white),
         );
         currentRoot = '$currentRoot:${rootPath[currentIndex]}';
@@ -533,13 +533,13 @@ class GeigerApiConnector {
 
   /// Send a data node which include creating a new node and write the data
   Future<bool> sendDataNode(String nodeId, String nodePath, List<String> keys,
-      List<String> values, String? owner) async {
+      List<String> values) async {
     if (keys.length != values.length) {
       log('The size of keys and values must be the same');
       return false;
     }
     try {
-      Node node = NodeImpl(nodeId, owner ?? '', nodePath, Visibility.white);
+      Node node = NodeImpl(nodeId, pluginId, nodePath, Visibility.white);
       for (var i = 0; i < keys.length; i++) {
         await node.addValue(NodeValueImpl(keys[i], values[i]));
       }
@@ -589,7 +589,7 @@ class GeigerApiConnector {
     String recommendationId = getUniqueId();
     String createdDate = DateTime.now().toIso8601String();
     try {
-      Node node = NodeImpl(recommendationId, '', recommendationRootPath);
+      Node node = NodeImpl(recommendationId, pluginId, recommendationRootPath);
       await node.addOrUpdateValue(
         NodeValueImpl(
             'short', '${recommendationNodeModel.short} - $createdDate'),
@@ -671,7 +671,7 @@ class GeigerApiConnector {
       //   return false;
       // }
 
-      Node node = NodeImpl(currentRecommendationId, '', rootPath);
+      Node node = NodeImpl(currentRecommendationId, pluginId, rootPath);
       await node.addOrUpdateValue(
         NodeValueImpl(
             'name', 'Recommendation status of $currentRecommendationId'),
@@ -832,7 +832,7 @@ class GeigerApiConnector {
         return true;
       }
 
-      Node node = NodeImpl(sensorDataModel.sensorId, '', rootPath);
+      Node node = NodeImpl(sensorDataModel.sensorId, pluginId, rootPath);
       await node.addOrUpdateValue(
         NodeValueImpl('name', sensorDataModel.name),
       );
@@ -933,21 +933,23 @@ class GeigerApiConnector {
   Future<bool> updatePluginInfo(
       String pluginId, String companyName, String description) async {
     // Prepare the plugin node
-    bool ret = await prepareRoot([
-      'Devices',
-      currentDeviceId!,
-    ], '');
+    bool ret = await prepareRoot(
+      [
+        'Devices',
+        currentDeviceId!,
+      ],
+    );
     if (ret == false) {
       log('Failed to prepare the plugin node');
       return false;
     }
     // Write plugin info
     ret = await sendDataNode(
-        pluginId,
-        ':Devices:${currentDeviceId!}',
-        ['name', 'company_name', 'description'],
-        [pluginName, companyName, description],
-        null);
+      pluginId,
+      ':Devices:${currentDeviceId!}',
+      ['name', 'company_name', 'description'],
+      [pluginName, companyName, description],
+    );
     if (ret == false) {
       log('Failed to store plugin information');
       return false;

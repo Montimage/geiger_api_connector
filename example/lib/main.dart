@@ -142,36 +142,44 @@ class MyHomePageState extends State<MyHomePage> {
 
     // Prepare some data roots
     // Prepare Devices data metrics node
-    ret = await pluginApiConnector.prepareRoot([
-      'Devices',
-      pluginApiConnector.currentDeviceId!,
-      montimagePluginId,
-      'data',
-      'metrics'
-    ], '');
+    ret = await pluginApiConnector.prepareRoot(
+      [
+        'Devices',
+        pluginApiConnector.currentDeviceId!,
+        montimagePluginId,
+        'data',
+        'metrics'
+      ],
+    );
     if (ret == false) return false;
     // Prepare a recommendation node
-    ret = await pluginApiConnector.prepareRoot([
-      'Devices',
-      pluginApiConnector.currentDeviceId!,
-      montimagePluginId,
-      'data',
-      'recommendations'
-    ], '');
+    ret = await pluginApiConnector.prepareRoot(
+      [
+        'Devices',
+        pluginApiConnector.currentDeviceId!,
+        montimagePluginId,
+        'data',
+        'recommendations'
+      ],
+    );
     // Prepare Users data metrics node
-    ret = await pluginApiConnector.prepareRoot([
-      'Users',
-      pluginApiConnector.currentUserId!,
-      montimagePluginId,
-      'data',
-      'metrics'
-    ], '');
+    ret = await pluginApiConnector.prepareRoot(
+      [
+        'Users',
+        pluginApiConnector.currentUserId!,
+        montimagePluginId,
+        'data',
+        'metrics'
+      ],
+    );
     if (ret == false) return false;
-    ret = await pluginApiConnector.prepareRoot([
-      'Chatbot',
-      'sensors',
-      montimagePluginId,
-    ], '');
+    ret = await pluginApiConnector.prepareRoot(
+      [
+        'Chatbot',
+        'sensors',
+        montimagePluginId,
+      ],
+    );
     if (ret == false) return false;
     // write the plugin information
     ret = await pluginApiConnector.updatePluginInfo(
@@ -793,11 +801,11 @@ class MyHomePageState extends State<MyHomePage> {
                       ElevatedButton(
                         onPressed: () {
                           pluginApiConnector.sendDataNode(
-                              'cffb567a-3d64-4204-a637-1da234ed25b0',
-                              ':Global:Recommendations',
-                              ['RecommendationType'],
-                              ['device'],
-                              null);
+                            'cffb567a-3d64-4204-a637-1da234ed25b0',
+                            ':Global:Recommendations',
+                            ['RecommendationType'],
+                            ['device'],
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
