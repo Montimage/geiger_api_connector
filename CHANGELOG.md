@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.4
+
+* Fix the rootPath of recommendation and recommendation status for user's recommendation. Basically all data nodes relate to a recommendation should be stored in ":Devices:deviceUUID:pluginUUID:data" root.
+
 ## 0.4.3
 
 * Add owner Id while creating a node
