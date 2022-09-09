@@ -84,8 +84,8 @@ class MyHomePageState extends State<MyHomePage> {
     threatsImpact:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
   );
-  String deviceRecommendation01Id = const Uuid().v4();
-  RecommendationNodeModel deviceRecommendation01 = RecommendationNodeModel(
+  String deviceRecommendationId = const Uuid().v4();
+  RecommendationNodeModel deviceRecommendation = RecommendationNodeModel(
     sensorId: 'mi-ksp-scanner-is-rooted-device',
     short: 'This is a short description of my recommendation 01',
     long: 'This is a long description of my description 01',
@@ -95,8 +95,8 @@ class MyHomePageState extends State<MyHomePage> {
     costs: 'False',
     recommendationType: 'device',
   );
-  String deviceRecommendation02Id = const Uuid().v4();
-  RecommendationNodeModel deviceRecommendation02 = RecommendationNodeModel(
+  String userRecommendationId = const Uuid().v4();
+  RecommendationNodeModel userRecommendation = RecommendationNodeModel(
     sensorId: 'mi-ksp-scanner-is-rooted-device',
     short: 'This is a short description of my recommendation 02',
     long: 'This is a long description of my description 02',
@@ -142,37 +142,37 @@ class MyHomePageState extends State<MyHomePage> {
 
     // Prepare some data roots
     // Prepare Devices data metrics node
-    ret = await pluginApiConnector.prepareRoot(
-      [
-        'Devices',
-        pluginApiConnector.currentDeviceId!,
-        montimagePluginId,
-        'data',
-        'metrics'
-      ],
-    );
-    if (ret == false) return false;
+    // ret = await pluginApiConnector.prepareRoot(
+    //   [
+    //     'Devices',
+    //     pluginApiConnector.currentDeviceId!,
+    //     montimagePluginId,
+    //     'data',
+    //     'metrics'
+    //   ],
+    // );
+    // if (ret == false) return false;
     // Prepare a recommendation node
-    ret = await pluginApiConnector.prepareRoot(
-      [
-        'Devices',
-        pluginApiConnector.currentDeviceId!,
-        montimagePluginId,
-        'data',
-        'recommendations'
-      ],
-    );
+    // ret = await pluginApiConnector.prepareRoot(
+    //   [
+    //     'Devices',
+    //     pluginApiConnector.currentDeviceId!,
+    //     montimagePluginId,
+    //     'data',
+    //     'recommendations'
+    //   ],
+    // );
     // Prepare Users data metrics node
-    ret = await pluginApiConnector.prepareRoot(
-      [
-        'Users',
-        pluginApiConnector.currentUserId!,
-        montimagePluginId,
-        'data',
-        'metrics'
-      ],
-    );
-    if (ret == false) return false;
+    // ret = await pluginApiConnector.prepareRoot(
+    //   [
+    //     'Users',
+    //     pluginApiConnector.currentUserId!,
+    //     montimagePluginId,
+    //     'data',
+    //     'metrics'
+    //   ],
+    // );
+    // if (ret == false) return false;
     ret = await pluginApiConnector.prepareRoot(
       [
         'Chatbot',
@@ -564,62 +564,62 @@ class MyHomePageState extends State<MyHomePage> {
                         child: const Text('Send a user data'),
                       ),
                       const SizedBox(height: 5),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // trigger/send a SCAN_COMPLETED event
-                          setState(() {
-                            isInProcessing = true;
-                          });
-                          final bool sentData = await pluginApiConnector
-                              .sendPluginEventType(MessageType.scanCompleted);
-                          if (sentData == false) {
-                            _showSnackBar(
-                                'Failed to send SCAN_COMPLETED event');
-                          } else {
-                            _showSnackBar(
-                                'The SCAN_COMPLETED event has been sent');
-                          }
-                          setState(() {
-                            isInProcessing = false;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
-                        ),
-                        child: const Text('Send SCAN_COMPLETED event'),
-                      ),
-                      const SizedBox(height: 5),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // trigger/send a SCAN_COMPLETED event
-                          setState(() {
-                            isInProcessing = true;
-                          });
-                          final String payload = '''{
-                            "title":"A message from MI Cyberrange",
-                            "message":"You should do more anti-phishing email testing",
-                            "timestamp": ${DateTime.now().millisecondsSinceEpoch}
-                          }''';
-                          final bool sentData = await pluginApiConnector
-                              .sendPluginEventWithPayload(
-                                  MessageType.customEvent, payload);
-                          if (sentData == false) {
-                            _showSnackBar(
-                                'Failed to send a message with payload');
-                          } else {
-                            _showSnackBar(
-                                'A message with payload has been sent');
-                          }
-                          setState(() {
-                            isInProcessing = false;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
-                        ),
-                        child: const Text(
-                            'Send a custom event with payload (json encoded string)'),
-                      ),
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     // trigger/send a SCAN_COMPLETED event
+                      //     setState(() {
+                      //       isInProcessing = true;
+                      //     });
+                      //     final bool sentData = await pluginApiConnector
+                      //         .sendPluginEventType(MessageType.scanCompleted);
+                      //     if (sentData == false) {
+                      //       _showSnackBar(
+                      //           'Failed to send SCAN_COMPLETED event');
+                      //     } else {
+                      //       _showSnackBar(
+                      //           'The SCAN_COMPLETED event has been sent');
+                      //     }
+                      //     setState(() {
+                      //       isInProcessing = false;
+                      //     });
+                      //   },
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size.fromHeight(40),
+                      //   ),
+                      //   child: const Text('Send SCAN_COMPLETED event'),
+                      // ),
+                      // const SizedBox(height: 5),
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     // trigger/send a SCAN_COMPLETED event
+                      //     setState(() {
+                      //       isInProcessing = true;
+                      //     });
+                      //     final String payload = '''{
+                      //       "title":"A message from MI Cyberrange",
+                      //       "message":"You should do more anti-phishing email testing",
+                      //       "timestamp": ${DateTime.now().millisecondsSinceEpoch}
+                      //     }''';
+                      //     final bool sentData = await pluginApiConnector
+                      //         .sendPluginEventWithPayload(
+                      //             MessageType.customEvent, payload);
+                      //     if (sentData == false) {
+                      //       _showSnackBar(
+                      //           'Failed to send a message with payload');
+                      //     } else {
+                      //       _showSnackBar(
+                      //           'A message with payload has been sent');
+                      //     }
+                      //     setState(() {
+                      //       isInProcessing = false;
+                      //     });
+                      //   },
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size.fromHeight(40),
+                      //   ),
+                      //   child: const Text(
+                      //       'Send a custom event with payload (json encoded string)'),
+                      // ),
                       // const SizedBox(height: 5),
                       // ElevatedButton(
                       //   onPressed: () async {
@@ -684,9 +684,9 @@ class MyHomePageState extends State<MyHomePage> {
                       //   ),
                       //   child: const Text('Send a threat info to Chatbot'),
                       // ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      // const SizedBox(
+                      //   height: 5,
+                      // ),
                       ElevatedButton(
                         onPressed: () async {
                           // trigger/send a STORAGE_EVENT event
@@ -696,7 +696,7 @@ class MyHomePageState extends State<MyHomePage> {
                           final bool sentData =
                               await pluginApiConnector.sendRecommendation(
                             "Devices",
-                            deviceRecommendation01,
+                            deviceRecommendation,
                           );
                           if (sentData == false) {
                             _showSnackBar(
@@ -712,7 +712,7 @@ class MyHomePageState extends State<MyHomePage> {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
-                        child: const Text('Send the device recommendation 01'),
+                        child: const Text('Send the device recommendation'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -725,8 +725,10 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                           final bool recom =
                               await pluginApiConnector.isRecommendationExist(
-                                  "Devices", deviceRecommendation01Id);
-                          log('Device recommendation node $deviceRecommendation01Id): $recom');
+                            "Devices",
+                            deviceRecommendation.sensorId,
+                          );
+                          log('Device recommendation of sensor node ${deviceRecommendation.sensorId}): $recom');
                           setState(() {
                             isInProcessing = false;
                           });
@@ -734,7 +736,7 @@ class MyHomePageState extends State<MyHomePage> {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
-                        child: const Text('Check the device recommendation 01'),
+                        child: const Text('Check the device recommendation'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -747,7 +749,9 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                           final bool sentData =
                               await pluginApiConnector.resolveRecommendation(
-                                  'Devices', deviceRecommendation01Id, '0');
+                                  'Devices',
+                                  deviceRecommendation.sensorId,
+                                  '0');
                           if (sentData == false) {
                             _showSnackBar(
                                 'Failed to resolve a device recommendation');
@@ -762,8 +766,7 @@ class MyHomePageState extends State<MyHomePage> {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
-                        child:
-                            const Text('Resolve the device recommendation 01'),
+                        child: const Text('Resolve the device recommendation'),
                       ),
                       const SizedBox(
                         height: 5,
@@ -776,15 +779,15 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                           final bool sentData =
                               await pluginApiConnector.sendRecommendation(
-                            "Devices",
-                            deviceRecommendation02,
+                            "Users",
+                            userRecommendation,
                           );
                           if (sentData == false) {
                             _showSnackBar(
-                                'Failed to send a device recommendation');
+                                'Failed to send a user recommendation');
                           } else {
                             _showSnackBar(
-                                'A Device recommendation has been sent');
+                                'A user recommendation has been sent');
                           }
                           setState(() {
                             isInProcessing = false;
@@ -793,28 +796,80 @@ class MyHomePageState extends State<MyHomePage> {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
-                        child: const Text('Send the device recommendation 02'),
+                        child: const Text('Send a user recommendation'),
                       ),
                       const SizedBox(
                         height: 5,
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          pluginApiConnector.sendDataNode(
-                            'cffb567a-3d64-4204-a637-1da234ed25b0',
-                            ':Global:Recommendations',
-                            ['RecommendationType'],
-                            ['device'],
+                        onPressed: () async {
+                          // trigger/send a STORAGE_EVENT event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final bool recom =
+                              await pluginApiConnector.isRecommendationExist(
+                            "Users",
+                            userRecommendation.sensorId,
                           );
+                          log('User recommendation of sensor node ${userRecommendation.sensorId}): $recom');
+                          setState(() {
+                            isInProcessing = false;
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(40),
                         ),
-                        child: const Text('Change a global recommendation'),
+                        child: const Text('Check the user recommendation'),
                       ),
                       const SizedBox(
                         height: 5,
                       ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // trigger/send a STORAGE_EVENT event
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final bool sentData =
+                              await pluginApiConnector.resolveRecommendation(
+                                  'Users', userRecommendation.sensorId, '1');
+                          if (sentData == false) {
+                            _showSnackBar(
+                                'Failed to resolve a device recommendation');
+                          } else {
+                            _showSnackBar(
+                                'A Device recommendation has been resolved');
+                          }
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                        child: const Text('Resolve the user recommendation'),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     pluginApiConnector.sendDataNode(
+                      //       'cffb567a-3d64-4204-a637-1da234ed25b0',
+                      //       ':Global:Recommendations',
+                      //       ['RecommendationType'],
+                      //       ['device'],
+                      //     );
+                      //   },
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size.fromHeight(40),
+                      //   ),
+                      //   child: const Text('Change a global recommendation'),
+                      // ),
+                      // const SizedBox(
+                      //   height: 5,
+                      // ),
                       ElevatedButton(
                         onPressed: () {
                           final String allEventStr =

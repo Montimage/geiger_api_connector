@@ -27,7 +27,7 @@ import 'storage_event_listener.dart';
 // }
 
 class GeigerApiConnector {
-  static String version = '0.4.3';
+  static String version = '0.4.5';
   static String geigerAPIVersion = '0.8.0';
   static String geigerLocalStorageVersion = '0.8.0';
 
@@ -51,6 +51,10 @@ class GeigerApiConnector {
 
   StorageEventListener? storageListener; // Listen to Storage Change event
   bool isStorageListenerRegistered = false;
+  String? deviceSensorDataRootPath;
+  String? userSensorDataRootPath;
+  String? recommendationRootPath;
+  String? recommendationStatusRootPath;
 
   /// Get an instance of GeigerApi, to be able to start working with GeigerToolbox
   Future<bool> connectToGeigerAPI(
@@ -184,7 +188,14 @@ class GeigerApiConnector {
       try {
         storageController = pluginApi!.storage;
         log('Connected to the GeigerStorage ${storageController.hashCode}');
-        return await updateCurrentIds();
+        bool ret = await updateCurrentIds();
+        if (ret == false) {
+          log('Failed to update userId and deviceId');
+          await close();
+          return false;
+        }
+        ret = await prepareDataRoot();
+        return ret;
       } catch (e, trace) {
         log('Failed to connect to the GeigerStorage');
         await close();
@@ -194,6 +205,35 @@ class GeigerApiConnector {
         }
         return false;
       }
+    }
+  }
+
+  Future<bool> updateCurrentIds() async {
+    log('Going to update the userId and the deviceId');
+    try {
+      currentUserId = await getUUID('currentUser');
+      currentDeviceId = await getUUID('currentDevice');
+      log('currentUserId: $currentUserId');
+      log('currentDeviceId: $currentDeviceId');
+      userSensorDataRootPath = ':Users:$currentUserId:$pluginId:data:metrics';
+      deviceSensorDataRootPath =
+          ':Devices:$currentDeviceId:$pluginId:data:metrics';
+      recommendationRootPath =
+          ':Devices:$currentDeviceId:$pluginId:data:recommendations';
+      recommendationStatusRootPath =
+          ':Devices:$currentDeviceId:$pluginId:data:recommendationStatus';
+      log('userSensorDataRootPath: $userSensorDataRootPath');
+      log('deviceSensorDataRootPath: $deviceSensorDataRootPath');
+      log('recommendationRootPath: $recommendationRootPath');
+      log('recommendationStatusRootPath: $recommendationStatusRootPath');
+      return true;
+    } catch (e, trace) {
+      log('Failed to update the userId and the deviceId');
+      log(e.toString());
+      if (exceptionHandler != null) {
+        exceptionHandler!(e, trace);
+      }
+      return false;
     }
   }
 
@@ -280,6 +320,68 @@ class GeigerApiConnector {
         return false;
       }
     }
+  }
+
+  /// Prepare some basic data root path
+  /// - Device data metrics
+  /// - User data metrics
+  /// - Recommendation
+  /// - Recommendation status
+  Future<bool> prepareDataRoot() async {
+    // prepare user metrics root
+    log('Preparing the device data root path');
+    bool ret = await prepareRoot([
+      'Devices',
+      currentDeviceId!,
+      pluginId,
+      'data',
+      'metrics',
+    ]);
+    if (ret == false) {
+      log('Failed to prepare device data root path');
+      return false;
+    }
+
+    log('Preparing the user data root path');
+    ret = await prepareRoot([
+      'Users',
+      currentUserId!,
+      pluginId,
+      'data',
+      'metrics',
+    ]);
+    if (ret == false) {
+      log('Failed to prepare user data root path');
+      return false;
+    }
+
+    log('Preparing the recommendation root path');
+    ret = await prepareRoot([
+      'Devices',
+      currentDeviceId!,
+      pluginId,
+      'data',
+      'recommendations',
+    ]);
+    if (ret == false) {
+      log('Failed to prepare user data root path');
+      return false;
+    }
+
+    log('Preparing the recommendation status root path');
+    ret = await prepareRoot([
+      'Devices',
+      currentDeviceId!,
+      pluginId,
+      'data',
+      'recommendationStatus'
+    ]);
+    if (ret == false) {
+      log('Failed to prepare user data root path');
+      return false;
+    }
+
+    return true;
   }
 
   /// Send a simple Plugin Event which contain only the message type to the GeigerToolbox
@@ -403,8 +505,7 @@ class GeigerApiConnector {
   /// Send some device sensor data to GeigerToolbox
   Future<bool> sendDeviceSensorData(String sensorId, String value,
       {String? description, String? urgency}) async {
-    String nodePath =
-        ':Devices:$currentDeviceId:$pluginId:data:metrics:$sensorId';
+    String nodePath = '$deviceSensorDataRootPath:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
       node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
@@ -437,7 +538,7 @@ class GeigerApiConnector {
   /// Send some user sensor data to GeigerToolbox
   Future<bool> sendUserSensorData(String sensorId, String value,
       {String? description, String? urgency}) async {
-    String nodePath = ':Users:$currentUserId:$pluginId:data:metrics:$sensorId';
+    String nodePath = '$userSensorDataRootPath:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
       node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
@@ -557,13 +658,13 @@ class GeigerApiConnector {
   }
 
   Future<bool> isRecommendationExist(String rootType, String sensorId) async {
-    String dataNodePath =
-        ':$rootType:${rootType == 'Users' ? '$currentUserId' : '$currentDeviceId'}:$pluginId:data:metrics:$sensorId';
-    String? currentRecommendationId =
-        await _readValueNode(dataNodePath, 'currentRecommendationId');
+    String recommendationStatusPath = '$recommendationStatusRootPath:$sensorId';
+    String? currentRecommendationId = await _readValueNode(
+      recommendationStatusPath,
+      'currentRecommendationId',
+    );
     if (currentRecommendationId != null && currentRecommendationId.isNotEmpty) {
-      String recPath =
-          ':$rootType:${rootType == 'Users' ? '$currentUserId' : '$currentDeviceId'}:$pluginId:data:recommendations:$currentRecommendationId';
+      String recPath = '$recommendationRootPath:$currentRecommendationId';
       return await isNodeExist(recPath);
     }
     return false;
@@ -574,18 +675,15 @@ class GeigerApiConnector {
   /// - if the data node does not have a recommendation, or the currentRecommendationId = '', then send a new once
   Future<bool> sendRecommendation(
       String rootType, RecommendationNodeModel recommendationNodeModel) async {
-    String sensorRoot =
-        ':$rootType:${rootType == 'Users' ? '$currentUserId' : '$currentDeviceId'}:$pluginId:data:metrics';
-    String sensorNodePath = '$sensorRoot:${recommendationNodeModel.sensorId}';
-    String? currentRecommendationId =
-        await _readValueNode(sensorNodePath, 'currentRecommendationId');
+    String recommendationStatusPath =
+        '$recommendationStatusRootPath:${recommendationNodeModel.sensorId}';
+    String? currentRecommendationId = await _readValueNode(
+        recommendationStatusPath, 'currentRecommendationId');
     if (currentRecommendationId != null && currentRecommendationId.isNotEmpty) {
       log('A recommendation has been sent and unresolved $currentRecommendationId. Do not send a new once');
       return true;
     }
     log('Going to send a new recommendation');
-    String recommendationRootPath =
-        ':Devices:$currentDeviceId:$pluginId:data:recommendations';
     String recommendationId = getUniqueId();
     String createdDate = DateTime.now().toIso8601String();
     try {
@@ -626,8 +724,12 @@ class GeigerApiConnector {
       try {
         await storageController!.addOrUpdate(node);
         log('After adding a recommendation node $recommendationId');
-        updateNodeValue(
-            sensorNodePath, 'currentRecommendationId', recommendationId);
+        await sendDataNode(
+          recommendationNodeModel.sensorId,
+          recommendationStatusRootPath!,
+          ['currentRecommendationId'],
+          [recommendationId],
+        );
         return true;
       } catch (e2, trace2) {
         log('Failed to update Storage');
@@ -653,10 +755,9 @@ class GeigerApiConnector {
   /// - Create a recommendation status node
   Future<bool> resolveRecommendation(
       String rootType, String sensorId, String geigerValue) async {
-    String sensorRootPath =
-        ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
+    String recommendationStatusPath = '$recommendationStatusRootPath:$sensorId';
     String? currentRecommendationId = await _readValueNode(
-        '$sensorRootPath:$sensorId', 'currentRecommendationId');
+        recommendationStatusPath, 'currentRecommendationId');
     if (currentRecommendationId == null || currentRecommendationId.isEmpty) {
       log('Cannot find the recommendation for the sensor data: $sensorId');
       return false;
@@ -664,15 +765,8 @@ class GeigerApiConnector {
 
     log('Before adding a recommendation status node $currentRecommendationId');
     try {
-      // bool isRootExist = await isNodeExist(rootPath);
-      // if (!isRootExist) {
-      //   log('Root $rootPath is not exist');
-      //   return false;
-      // }
-      String recommendationStatusRootPath =
-          ':Devices:$currentDeviceId:$pluginId:data:metrics';
-      Node node = NodeImpl(
-          currentRecommendationId, pluginId, recommendationStatusRootPath);
+      Node node =
+          NodeImpl(currentRecommendationId, pluginId, deviceSensorDataRootPath);
       await node.addOrUpdateValue(
         NodeValueImpl(
             'name', 'Recommendation status of $currentRecommendationId'),
@@ -714,7 +808,7 @@ class GeigerApiConnector {
         log('Going to update the sensor node');
         try {
           await updateNodeValue(
-              '$sensorRootPath:$sensorId', 'currentRecommendationId', '');
+              recommendationStatusPath, 'currentRecommendationId', '');
           return true;
         } catch (e3) {
           log('Failed to update the sensor node');
@@ -741,77 +835,6 @@ class GeigerApiConnector {
     }
   }
 
-  // Future<bool> resolveDeviceRecommendation(SensorDataModel sensorDataModel,
-  //     String recommendationId, String geigerValue) async {
-  //   return await _resolveRecommendation(
-  //       sensorDataModel, 'Devices', recommendationId, geigerValue);
-  // }
-
-  // Future<bool> resolveUserRecommendation(SensorDataModel sensorDataModel,
-  //     String recommendationId, String geigerValue) async {
-  //   return await _resolveRecommendation(
-  //       sensorDataModel, 'Users', recommendationId, geigerValue);
-  // }
-
-  // Future<bool> _resolveRecommendation(SensorDataModel sensorDataModel,
-  //     String rootType, String recommendationId, String geigerValue) async {
-  //   String rootPath =
-  //       ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
-  //   String nodeId = '$recommendationId-status';
-  //   log('Before adding a sensor node $nodeId');
-  //   try {
-  //     Node node = NodeImpl(nodeId, '', rootPath);
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('name', sensorDataModel.name),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('description', sensorDataModel.description),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('minValue', sensorDataModel.minValue),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('maxValue', sensorDataModel.maxValue),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('valueType', sensorDataModel.valueType),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('flag', sensorDataModel.flag),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('threatsImpact', sensorDataModel.threatsImpact),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('recommendationId', recommendationId),
-  //     );
-  //     await node.addOrUpdateValue(
-  //       NodeValueImpl('geigerValue', geigerValue),
-  //     );
-  //     log('A node has been created');
-  //     log(node.toString());
-  //     try {
-  //       await storageController!.addOrUpdate(node);
-  //       log('After adding a sensor node $nodeId');
-  //       return true;
-  //     } catch (e2, trace2) {
-  //       log('Failed to update Storage');
-  //       log(e2.toString());
-  //       if (exceptionHandler != null) {
-  //         exceptionHandler!(e2, trace2);
-  //       }
-  //       return false;
-  //     }
-  //   } catch (e, trace) {
-  //     log('Failed to add a sensor node $nodeId');
-  //     log(e.toString());
-  //     if (exceptionHandler != null) {
-  //       exceptionHandler!(e, trace);
-  //     }
-  //     return false;
-  //   }
-  // }
-
   Future<bool> addUserSensorNode(SensorDataModel sensorDataModel) async {
     return await _addSensorNode(sensorDataModel, 'Users');
   }
@@ -822,8 +845,9 @@ class GeigerApiConnector {
 
   Future<bool> _addSensorNode(
       SensorDataModel sensorDataModel, String rootType) async {
-    String rootPath =
-        ':$rootType:${rootType == 'Users' ? currentUserId : currentDeviceId}:$pluginId:data:metrics';
+    String rootPath = rootType == 'Users'
+        ? userSensorDataRootPath!
+        : deviceSensorDataRootPath!;
     log('Before adding a sensor node ${sensorDataModel.sensorId}');
     try {
       bool checkNode =
@@ -885,15 +909,13 @@ class GeigerApiConnector {
   /// Read a value of user sensor
   Future<String?> readUserSensorData(
       String pluginId, String sensorId, String key) async {
-    return await _readValueNode(
-        ':Users:$currentUserId:$pluginId:data:metrics:$sensorId', key);
+    return await _readValueNode('$userSensorDataRootPath:$sensorId', key);
   }
 
   /// Read a value of device sensor
   Future<String?> readDeviceSensorData(
       String pluginId, String sensorId, String key) async {
-    return await _readValueNode(
-        ':Devices:$currentDeviceId:$pluginId:data:metrics:$sensorId', key);
+    return await _readValueNode('$deviceSensorDataRootPath:$sensorId', key);
   }
 
   Future<String?> _readValueNode(String nodePath, String key) async {
@@ -909,24 +931,6 @@ class GeigerApiConnector {
         exceptionHandler!(e, trace);
       }
       return null;
-    }
-  }
-
-  Future<bool> updateCurrentIds() async {
-    log('Going to update the userId and the deviceId');
-    try {
-      currentUserId = await getUUID('currentUser');
-      currentDeviceId = await getUUID('currentDevice');
-      log('currentUserId: $currentUserId');
-      log('currentDeviceId: $currentDeviceId');
-      return true;
-    } catch (e, trace) {
-      log('Failed to update the userId and the deviceId');
-      log(e.toString());
-      if (exceptionHandler != null) {
-        exceptionHandler!(e, trace);
-      }
-      return false;
     }
   }
 
