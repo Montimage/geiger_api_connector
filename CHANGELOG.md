@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.6
+
+* Avoid error reporting while updating the empty recommendation id
+
 ## 0.4.5
 
 * Update the recommendation lifecycle to avoid duplicating sending sensor data

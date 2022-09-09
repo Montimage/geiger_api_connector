@@ -27,7 +27,7 @@ import 'storage_event_listener.dart';
 // }
 
 class GeigerApiConnector {
-  static String version = '0.4.5';
+  static String version = '0.4.6';
   static String geigerAPIVersion = '0.8.0';
   static String geigerLocalStorageVersion = '0.8.0';
 
@@ -807,8 +807,12 @@ class GeigerApiConnector {
         log('After adding a recommendation status node $currentRecommendationId');
         log('Going to update the sensor node');
         try {
-          await updateNodeValue(
-              recommendationStatusPath, 'currentRecommendationId', '');
+          await sendDataNode(
+            sensorId,
+            recommendationStatusRootPath!,
+            ['currentRecommendationId'],
+            [''],
+          );
           return true;
         } catch (e3) {
           log('Failed to update the sensor node');
