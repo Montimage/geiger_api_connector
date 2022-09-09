@@ -84,6 +84,7 @@ class MyHomePageState extends State<MyHomePage> {
     threatsImpact:
         '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
   );
+
   String deviceRecommendationId = const Uuid().v4();
   RecommendationNodeModel deviceRecommendation = RecommendationNodeModel(
     sensorId: 'mi-ksp-scanner-is-rooted-device',
@@ -537,6 +538,34 @@ class MyHomePageState extends State<MyHomePage> {
                           minimumSize: const Size.fromHeight(40),
                         ),
                         child: const Text('Send a device data'),
+                      ),
+                      const SizedBox(height: 5),
+                      ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            isInProcessing = true;
+                          });
+                          final bool dataSent =
+                              await pluginApiConnector.sendDeviceSensorData(
+                            deviceNodeDataModel.sensorId,
+                            "invalid-value-data",
+                            description: "This is a custom description",
+                            urgency: 'high',
+                          );
+                          if (dataSent == false) {
+                            _showSnackBar(
+                                'Failed to send a device sensor data');
+                          } else {
+                            _showSnackBar('A device sensor data has been sent');
+                          }
+                          setState(() {
+                            isInProcessing = false;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                        child: const Text('Send an invalid device data'),
                       ),
                       const SizedBox(height: 5),
                       ElevatedButton(

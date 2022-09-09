@@ -183,7 +183,12 @@ class GeigerApiConnector {
     log('Trying to connect to the GeigerStorage');
     if (storageController != null) {
       log('Plugin $pluginId has already connected to the GeigerStorage (${storageController.hashCode})');
-      return await updateCurrentIds();
+      log('currentDeviceId: $currentDeviceId');
+      log('currentUserId: $currentUserId');
+      if (currentDeviceId == null || currentUserId == null) {
+        return await updateCurrentIds();
+      }
+      return true;
     } else {
       try {
         storageController = pluginApi!.storage;

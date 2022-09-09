@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.7
+
+* Only getting currentUser/Device Id if it is null
+
 ## 0.4.6
 
 * Avoid error reporting while updating the empty recommendation id
