@@ -61,8 +61,8 @@ class MyHomePageState extends State<MyHomePage> {
   GeigerApiConnector pluginApiConnector = GeigerApiConnector(
       pluginId: montimagePluginId, pluginName: montimagePluginName);
   SensorDataModel userNodeDataModel = SensorDataModel(
-    sensorId: 'mi-cyberrange-score-sensor-id',
-    name: 'MI Cyberrange Score',
+    sensorId: 'user-sensor-data',
+    name: 'MI Cyberrange (Test)',
     description: 'This is MI Cyberrange score',
     minValue: '0',
     maxValue: '100',
@@ -70,40 +70,40 @@ class MyHomePageState extends State<MyHomePage> {
     flag: '1',
     urgency: "high",
     threatsImpact:
-        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+        '1f3eff0a-1817-4ede-aef7-8c836aecc1c1,High;1f3eff0a-1817-4ede-aef7-8c836aecc1c3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,High',
   );
   SensorDataModel deviceNodeDataModel = SensorDataModel(
-    sensorId: 'mi-ksp-scanner-is-rooted-device',
-    name: 'Is device rooted',
-    description: 'This is device check',
-    minValue: 'false',
-    maxValue: 'true',
-    valueType: 'boolean',
+    sensorId: 'device-sensor-data',
+    name: 'MSEC (Test)',
+    description: 'This is MSEC malware report',
+    minValue: '0',
+    maxValue: '5',
+    valueType: 'double',
     flag: '0',
     urgency: "high",
     threatsImpact:
-        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+        'f7742d4c-2cfa-4c61-874e-fb8c38ef7d14,High;7cf1c9a8-fe8d-4ff7-be51-25e401537e11,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d1,Medium;1f3eff0a-1817-4ede-aef7-8c836aecc1c1,Low',
   );
 
   String deviceRecommendationId = const Uuid().v4();
   RecommendationNodeModel deviceRecommendation = RecommendationNodeModel(
-    sensorId: 'mi-ksp-scanner-is-rooted-device',
+    sensorId: 'device-sensor-data',
     short: 'This is a short description of my recommendation 01',
     long: 'This is a long description of my description 01',
     action: 'geiger://my-recommendation/01',
     relatedThreatsWeights:
-        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+        '1f3eff0a-1817-4ede-aef7-8c836aecc1c1,High;1f3eff0a-1817-4ede-aef7-8c836aecc1c3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,High',
     costs: 'False',
     recommendationType: 'device',
   );
   String userRecommendationId = const Uuid().v4();
   RecommendationNodeModel userRecommendation = RecommendationNodeModel(
-    sensorId: 'mi-ksp-scanner-is-rooted-device',
+    sensorId: 'user-sensor-data',
     short: 'This is a short description of my recommendation 02',
     long: 'This is a long description of my description 02',
     action: 'geiger://my-recommendation/02',
     relatedThreatsWeights:
-        '80efffaf-98a1-4e0a-8f5e-gr89388352ph,High;80efffaf-98a1-4e0a-8f5e-gr89388354sp,Hight;80efffaf-98a1-4e0a-8f5e-th89388365it,Hight;80efffaf-98a1-4e0a-8f5e-gr89388350ma,Medium;80efffaf-98a1-4e0a-8f5e-gr89388356db,Medium',
+        'f7742d4c-2cfa-4c61-874e-fb8c38ef7d14,High;7cf1c9a8-fe8d-4ff7-be51-25e401537e11,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d1,Medium;1f3eff0a-1817-4ede-aef7-8c836aecc1c1,Low',
     costs: 'False',
     recommendationType: 'device',
   );
@@ -521,7 +521,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                           final bool dataSent =
                               await pluginApiConnector.sendDeviceSensorData(
-                                  deviceNodeDataModel.sensorId, "true",
+                                  deviceNodeDataModel.sensorId, "5",
                                   description: "This is a custom description",
                                   urgency: 'high');
                           if (dataSent == false) {
@@ -548,7 +548,7 @@ class MyHomePageState extends State<MyHomePage> {
                           final bool dataSent =
                               await pluginApiConnector.sendDeviceSensorData(
                             deviceNodeDataModel.sensorId,
-                            "invalid-value-data",
+                            "-200",
                             description: "This is a custom description",
                             urgency: 'high',
                           );
@@ -575,7 +575,7 @@ class MyHomePageState extends State<MyHomePage> {
                           });
                           final bool dataSent =
                               await pluginApiConnector.sendUserSensorData(
-                                  userNodeDataModel.sensorId, "50",
+                                  userNodeDataModel.sensorId, "90",
                                   description: 'This is a custom description',
                                   urgency: 'medium');
                           if (dataSent == false) {
@@ -882,23 +882,23 @@ class MyHomePageState extends State<MyHomePage> {
                       const SizedBox(
                         height: 5,
                       ),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     pluginApiConnector.sendDataNode(
-                      //       'cffb567a-3d64-4204-a637-1da234ed25b0',
-                      //       ':Global:Recommendations',
-                      //       ['RecommendationType'],
-                      //       ['device'],
-                      //     );
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     minimumSize: const Size.fromHeight(40),
-                      //   ),
-                      //   child: const Text('Change a global recommendation'),
-                      // ),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
+                      ElevatedButton(
+                        onPressed: () {
+                          pluginApiConnector.sendDataNode(
+                            'cffb567a-3d64-4204-a637-1da234ed25b0',
+                            ':Global:Recommendations',
+                            ['RecommendationType'],
+                            ['device'],
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                        ),
+                        child: const Text('Change a global recommendation'),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       ElevatedButton(
                         onPressed: () {
                           final String allEventStr =
