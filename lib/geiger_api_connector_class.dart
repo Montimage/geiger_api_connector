@@ -3,7 +3,9 @@ import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:intl/locale.dart';
 
+import 'package:geiger_api_connector/multi_language_value.dart';
 import 'package:geiger_api_connector/recommendation_node_model.dart';
 import 'package:geiger_api_connector/utils.dart';
 
@@ -27,8 +29,8 @@ import 'storage_event_listener.dart';
 // }
 
 class GeigerApiConnector {
-  static String version = '0.4.6';
-  static String geigerAPIVersion = '0.8.0';
+  static String version = '0.4.8';
+  static String geigerAPIVersion = '0.8.1';
   static String geigerLocalStorageVersion = '0.8.0';
 
   GeigerApiConnector({
@@ -509,13 +511,13 @@ class GeigerApiConnector {
 
   /// Send some device sensor data to GeigerToolbox
   Future<bool> sendDeviceSensorData(String sensorId, String value,
-      {String? description, String? urgency}) async {
+      {List<MultilingualValues>? description, String? urgency}) async {
     String nodePath = '$deviceSensorDataRootPath:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
       node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
-      if (description != null) {
-        node.addOrUpdateValue(NodeValueImpl('description', description));
+      if (description != null && description.isNotEmpty) {
+        await updateMultilingualValues(node, 'description', description);
       }
       if (urgency != null) {
         node.addOrUpdateValue(NodeValueImpl('urgency', urgency));
@@ -542,13 +544,13 @@ class GeigerApiConnector {
 
   /// Send some user sensor data to GeigerToolbox
   Future<bool> sendUserSensorData(String sensorId, String value,
-      {String? description, String? urgency}) async {
+      {List<MultilingualValues>? description, String? urgency}) async {
     String nodePath = '$userSensorDataRootPath:$sensorId';
     try {
       Node node = await storageController!.get(nodePath);
       node.addOrUpdateValue(NodeValueImpl('GEIGERvalue', value));
-      if (description != null) {
-        node.addOrUpdateValue(NodeValueImpl('description', description));
+      if (description != null && description.isNotEmpty) {
+        await updateMultilingualValues(node, 'description', description);
       }
       if (urgency != null) {
         node.addOrUpdateValue(NodeValueImpl('urgency', urgency));
@@ -693,12 +695,8 @@ class GeigerApiConnector {
     String createdDate = DateTime.now().toIso8601String();
     try {
       Node node = NodeImpl(recommendationId, pluginId, recommendationRootPath);
-      await node.addOrUpdateValue(
-        NodeValueImpl('short', recommendationNodeModel.short),
-      );
-      await node.addOrUpdateValue(
-        NodeValueImpl('long', recommendationNodeModel.long),
-      );
+      await addMultilingualValues(node, 'short', recommendationNodeModel.short);
+      await addMultilingualValues(node, 'long', recommendationNodeModel.long);
       await node.addOrUpdateValue(
         NodeValueImpl('Action', recommendationNodeModel.action),
       );
@@ -776,10 +774,12 @@ class GeigerApiConnector {
         NodeValueImpl(
             'name', 'Recommendation status of $currentRecommendationId'),
       );
-      await node.addOrUpdateValue(
-        NodeValueImpl('description',
-            'Reflects the status of the recommendation with the indicated ID. geigerValue 0=resolved, 1=active'),
-      );
+      await addMultilingualValues(node, 'description', [
+        MultilingualValues(
+            language: "en",
+            value:
+                "Reflects the status of the recommendation with the indicated ID. geigerValue 0=resolved, 1=active")
+      ]);
       await node.addOrUpdateValue(
         NodeValueImpl('minValue', '0'),
       );
@@ -870,9 +870,8 @@ class GeigerApiConnector {
       await node.addOrUpdateValue(
         NodeValueImpl('name', sensorDataModel.name),
       );
-      await node.addOrUpdateValue(
-        NodeValueImpl('description', sensorDataModel.description),
-      );
+      await addMultilingualValues(
+          node, 'description', sensorDataModel.description);
       await node.addOrUpdateValue(
         NodeValueImpl('minValue', sensorDataModel.minValue),
       );
@@ -944,8 +943,8 @@ class GeigerApiConnector {
   }
 
   /// Update the information of the external plugin
-  Future<bool> updatePluginInfo(
-      String pluginId, String companyName, String description) async {
+  Future<bool> updatePluginInfo(String pluginId, String companyName,
+      List<MultilingualValues> description) async {
     // Prepare the plugin node
     bool ret = await prepareRoot(
       [
@@ -958,12 +957,14 @@ class GeigerApiConnector {
       return false;
     }
     // Write plugin info
-    ret = await sendDataNode(
-      pluginId,
-      ':Devices:${currentDeviceId!}',
-      ['name', 'company_name', 'description'],
-      [pluginName, companyName, description],
+    Node node = NodeImpl(pluginId, pluginId, ":Devices:${currentDeviceId!}");
+    await node.addOrUpdateValue(
+      NodeValueImpl('name', pluginName),
     );
+    await node.addOrUpdateValue(
+      NodeValueImpl('company_name', companyName),
+    );
+    await addMultilingualValues(node, 'description', description);
     if (ret == false) {
       log('Failed to store plugin information');
       return false;
@@ -974,5 +975,33 @@ class GeigerApiConnector {
   /// Open the Geiger Toolbox
   Future<bool> openGeigerToolbox() async {
     return await sendPluginEventType(MessageType.returningControl);
+  }
+
+  Future<void> addMultilingualValues(
+      Node node, String key, List<MultilingualValues> description) async {
+    NodeValue? nv = NodeValueImpl(key, description[0].value);
+    for (int i = 0; i < description.length; i++) {
+      nv.setValue(
+        description[i].value,
+        Locale.parse(description[i].language),
+      );
+    }
+    node.addOrUpdateValue(nv);
+  }
+
+  Future<void> updateMultilingualValues(
+      Node node, String key, List<MultilingualValues> description) async {
+    NodeValue? nv = await node.getValue(key);
+    if (nv == null) {
+      log('Failed to get the node value with $key');
+    } else {
+      for (int i = 0; i < description.length; i++) {
+        nv.setValue(
+          description[i].value,
+          Locale.parse(description[i].language),
+        );
+      }
+      node.addOrUpdateValue(nv);
+    }
   }
 }

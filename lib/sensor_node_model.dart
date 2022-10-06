@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:geiger_api_connector/multi_language_value.dart';
+
 Map<String, SensorDataModel> sensorDataModelFromMap(String str) =>
     Map.from(json.decode(str)).map((k, v) =>
         MapEntry<String, SensorDataModel>(k, SensorDataModel.fromMap(v)));
@@ -26,7 +28,7 @@ class SensorDataModel {
 
   String sensorId;
   String name;
-  String description;
+  List<MultilingualValues> description;
   String minValue;
   String maxValue;
   String valueType;
@@ -37,7 +39,14 @@ class SensorDataModel {
   factory SensorDataModel.fromMap(Map<String, dynamic> json) => SensorDataModel(
         sensorId: json["sensorId"],
         name: json["name"],
-        description: json["description"],
+        description: json['description'] == null
+            ? []
+            : List<MultilingualValues>.from(
+                (json['description'] as List<dynamic>).map<MultilingualValues>(
+                  (dynamic x) =>
+                      MultilingualValues.fromMap(x as Map<String, dynamic>),
+                ),
+              ),
         minValue: json["minValue"],
         maxValue: json["maxValue"],
         valueType: json["valueType"],
@@ -49,7 +58,13 @@ class SensorDataModel {
   Map<String, dynamic> toMap() => {
         "sensorId": sensorId,
         "name": name,
-        "description": description,
+        "description": description.isNotEmpty
+            ? <Map<String, dynamic>>[]
+            : List<MultilingualValues>.from(
+                description.map<Map<String, dynamic>>(
+                  (MultilingualValues x) => x.toMap(),
+                ),
+              ),
         "minValue": minValue,
         "maxValue": maxValue,
         "valueType": valueType,

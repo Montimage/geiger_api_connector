@@ -178,14 +178,14 @@ packages:
       name: geiger_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.0"
+    version: "0.8.1"
   geiger_api_connector:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.4.7"
+    version: "0.4.8"
   geiger_localstorage:
     dependency: transitive
     description:

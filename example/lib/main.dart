@@ -5,6 +5,7 @@ import 'dart:math' as math;
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:geiger_api_connector/multi_language_value.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:geiger_api_connector/geiger_api_connector.dart';
@@ -63,7 +64,12 @@ class MyHomePageState extends State<MyHomePage> {
   SensorDataModel userNodeDataModel = SensorDataModel(
     sensorId: 'user-sensor-data',
     name: 'MI Cyberrange (Test)',
-    description: 'This is MI Cyberrange score',
+    description: [
+      MultilingualValues(
+          language: "en", value: "MI Cyberrange sensor data in English"),
+      MultilingualValues(
+          language: "fr", value: "MI Cyberrange sensor data en francais")
+    ],
     minValue: '0',
     maxValue: '100',
     valueType: 'double',
@@ -75,7 +81,10 @@ class MyHomePageState extends State<MyHomePage> {
   SensorDataModel deviceNodeDataModel = SensorDataModel(
     sensorId: 'device-sensor-data',
     name: 'MSEC (Test)',
-    description: 'This is MSEC malware report',
+    description: [
+      MultilingualValues(language: "en", value: "MSEC sensor data in English"),
+      MultilingualValues(language: "fr", value: "MSEC sensor data en francais")
+    ],
     minValue: '0',
     maxValue: '5',
     valueType: 'double',
@@ -88,8 +97,12 @@ class MyHomePageState extends State<MyHomePage> {
   String deviceRecommendationId = const Uuid().v4();
   RecommendationNodeModel deviceRecommendation = RecommendationNodeModel(
     sensorId: 'device-sensor-data',
-    short: 'This is a short description of my recommendation 01',
-    long: 'This is a long description of my description 01',
+    short: [MultilingualValues(language: "en", value: "recommendation 01")],
+    long: [
+      MultilingualValues(
+          language: "en",
+          value: "This is a long description of recommendation 01")
+    ],
     action: 'geiger://my-recommendation/01',
     relatedThreatsWeights:
         '1f3eff0a-1817-4ede-aef7-8c836aecc1c1,High;1f3eff0a-1817-4ede-aef7-8c836aecc1c3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,High',
@@ -99,8 +112,15 @@ class MyHomePageState extends State<MyHomePage> {
   String userRecommendationId = const Uuid().v4();
   RecommendationNodeModel userRecommendation = RecommendationNodeModel(
     sensorId: 'user-sensor-data',
-    short: 'This is a short description of my recommendation 02',
-    long: 'This is a long description of my description 02',
+    short: [MultilingualValues(language: "en", value: "recommendation 02")],
+    long: [
+      MultilingualValues(
+          language: "en",
+          value: "This is a long description of recommendation 02"),
+      MultilingualValues(
+          language: "fr",
+          value: "C'est la long description de recommendation 02")
+    ],
     action: 'geiger://my-recommendation/02',
     relatedThreatsWeights:
         'f7742d4c-2cfa-4c61-874e-fb8c38ef7d14,High;7cf1c9a8-fe8d-4ff7-be51-25e401537e11,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d1,Medium;1f3eff0a-1817-4ede-aef7-8c836aecc1c1,Low',
@@ -183,8 +203,11 @@ class MyHomePageState extends State<MyHomePage> {
     );
     if (ret == false) return false;
     // write the plugin information
-    ret = await pluginApiConnector.updatePluginInfo(
-        montimagePluginId, 'Montimage', 'An awesome plugin');
+    ret = await pluginApiConnector
+        .updatePluginInfo(montimagePluginId, 'Montimage', [
+      MultilingualValues(language: "en", value: "Awesome Plugin"),
+      MultilingualValues(language: "fr", value: "Application Fantasitque")
+    ]);
     // Prepare some data nodes
     ret = await pluginApiConnector.addDeviceSensorNode(deviceNodeDataModel);
     if (ret == false) return false;
@@ -522,7 +545,11 @@ class MyHomePageState extends State<MyHomePage> {
                           final bool dataSent =
                               await pluginApiConnector.sendDeviceSensorData(
                                   deviceNodeDataModel.sensorId, "5",
-                                  description: "This is a custom description",
+                                  description: [
+                                    MultilingualValues(
+                                        language: "en",
+                                        value: "The score is too high")
+                                  ],
                                   urgency: 'high');
                           if (dataSent == false) {
                             _showSnackBar(
@@ -549,7 +576,10 @@ class MyHomePageState extends State<MyHomePage> {
                               await pluginApiConnector.sendDeviceSensorData(
                             deviceNodeDataModel.sensorId,
                             "-200",
-                            description: "This is a custom description",
+                            description: [
+                              MultilingualValues(
+                                  language: "en", value: "The score is too low")
+                            ],
                             urgency: 'high',
                           );
                           if (dataSent == false) {
@@ -576,7 +606,11 @@ class MyHomePageState extends State<MyHomePage> {
                           final bool dataSent =
                               await pluginApiConnector.sendUserSensorData(
                                   userNodeDataModel.sensorId, "90",
-                                  description: 'This is a custom description',
+                                  description: [
+                                    MultilingualValues(
+                                        language: "en",
+                                        value: "The score is too high")
+                                  ],
                                   urgency: 'medium');
                           if (dataSent == false) {
                             _showSnackBar('Failed to send a user sensor data');

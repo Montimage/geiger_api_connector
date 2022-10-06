@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## 0.4.8
+
+* Update to geiger_api 0.8.1
+* Description must be provided in multiple languages
+
 ## 0.4.7
 
 * Only getting currentUser/Device Id if it is null
