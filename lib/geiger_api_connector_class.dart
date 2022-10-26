@@ -717,7 +717,9 @@ class GeigerApiConnector {
       await node.addOrUpdateValue(
         NodeValueImpl('pluginName', pluginName),
       );
-
+      await node.addOrUpdateValue(
+        NodeValueImpl('os', recommendationNodeModel.os),
+      );
       await node.addOrUpdateValue(
         NodeValueImpl('createdDate', createdDate),
       );

@@ -185,7 +185,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.4.8"
+    version: "0.4.10"
   geiger_localstorage:
     dependency: transitive
     description:
