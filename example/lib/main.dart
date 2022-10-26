@@ -62,7 +62,7 @@ class MyHomePageState extends State<MyHomePage> {
   GeigerApiConnector pluginApiConnector = GeigerApiConnector(
       pluginId: montimagePluginId, pluginName: montimagePluginName);
   SensorDataModel userNodeDataModel = SensorDataModel(
-    sensorId: 'user-sensor-data',
+    sensorId: 'user-sensor-data-flag-0',
     name: 'MI Cyberrange (Test)',
     description: [
       MultilingualValues(
@@ -73,7 +73,7 @@ class MyHomePageState extends State<MyHomePage> {
     minValue: '0',
     maxValue: '100',
     valueType: 'double',
-    flag: '1',
+    flag: '0',
     urgency: "high",
     threatsImpact:
         '1f3eff0a-1817-4ede-aef7-8c836aecc1c1,High;1f3eff0a-1817-4ede-aef7-8c836aecc1c3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,High',
@@ -88,7 +88,7 @@ class MyHomePageState extends State<MyHomePage> {
     minValue: '0',
     maxValue: '5',
     valueType: 'double',
-    flag: '0',
+    flag: '1',
     urgency: "high",
     threatsImpact:
         'f7742d4c-2cfa-4c61-874e-fb8c38ef7d14,High;7cf1c9a8-fe8d-4ff7-be51-25e401537e11,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d1,Medium;1f3eff0a-1817-4ede-aef7-8c836aecc1c1,Low',
@@ -108,6 +108,7 @@ class MyHomePageState extends State<MyHomePage> {
         '1f3eff0a-1817-4ede-aef7-8c836aecc1c1,High;1f3eff0a-1817-4ede-aef7-8c836aecc1c3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,High',
     costs: 'False',
     recommendationType: 'device',
+    os: '[android,iphone]',
   );
   String userRecommendationId = const Uuid().v4();
   RecommendationNodeModel userRecommendation = RecommendationNodeModel(
@@ -126,6 +127,7 @@ class MyHomePageState extends State<MyHomePage> {
         'f7742d4c-2cfa-4c61-874e-fb8c38ef7d14,High;7cf1c9a8-fe8d-4ff7-be51-25e401537e11,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d3,Medium;f1836c07-0bf8-49ab-831a-61026c7ce0d1,Medium;1f3eff0a-1817-4ede-aef7-8c836aecc1c1,Low',
     costs: 'False',
     recommendationType: 'device',
+    os: '[android,iphone]',
   );
 
   // String masterExecutor = 'cybergeigertoolbox.geiger_toolbox;'
@@ -542,21 +544,26 @@ class MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             isInProcessing = true;
                           });
-                          final bool dataSent =
-                              await pluginApiConnector.sendDeviceSensorData(
-                                  deviceNodeDataModel.sensorId, "5",
-                                  description: [
-                                    MultilingualValues(
-                                        language: "en",
-                                        value: "The score is too high")
-                                  ],
-                                  urgency: 'high');
-                          if (dataSent == false) {
-                            _showSnackBar(
-                                'Failed to send a device sensor data');
-                          } else {
-                            _showSnackBar('A device sensor data has been sent');
+                          for (var i = 5; i >= 0; i--) {
+                            final bool dataSent =
+                                await pluginApiConnector.sendDeviceSensorData(
+                                    deviceNodeDataModel.sensorId, '$i',
+                                    description: [
+                                      MultilingualValues(
+                                          language: "en",
+                                          value:
+                                              "The geigerValue is $i/5 - flag = 1")
+                                    ],
+                                    urgency: 'high');
+                            if (dataSent == false) {
+                              _showSnackBar(
+                                  'Failed to send a device sensor data');
+                            } else {
+                              _showSnackBar(
+                                  'A device sensor data has been sent');
+                            }
                           }
+
                           setState(() {
                             isInProcessing = false;
                           });
@@ -603,20 +610,25 @@ class MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             isInProcessing = true;
                           });
-                          final bool dataSent =
-                              await pluginApiConnector.sendUserSensorData(
-                                  userNodeDataModel.sensorId, "90",
-                                  description: [
-                                    MultilingualValues(
-                                        language: "en",
-                                        value: "The score is too high")
-                                  ],
-                                  urgency: 'medium');
-                          if (dataSent == false) {
-                            _showSnackBar('Failed to send a user sensor data');
-                          } else {
-                            _showSnackBar('A user sensor data has been sent');
+                          for (var i = 10; i >= 0; i--) {
+                            final bool dataSent =
+                                await pluginApiConnector.sendUserSensorData(
+                                    userNodeDataModel.sensorId, "${i * 10}",
+                                    description: [
+                                      MultilingualValues(
+                                          language: "en",
+                                          value:
+                                              "The geigerValue is ${i * 10}/100 - flag = 0")
+                                    ],
+                                    urgency: 'medium');
+                            if (dataSent == false) {
+                              _showSnackBar(
+                                  'Failed to send a user sensor data');
+                            } else {
+                              _showSnackBar('A user sensor data has been sent');
+                            }
                           }
+
                           setState(() {
                             isInProcessing = false;
                           });

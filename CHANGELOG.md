@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.9
+
+* Add os attributes for recommendation
+
 ## 0.4.8
 
 * Update to geiger_api 0.8.1

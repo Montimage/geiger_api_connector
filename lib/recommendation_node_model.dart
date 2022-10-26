@@ -26,6 +26,7 @@ class RecommendationNodeModel {
     required this.relatedThreatsWeights,
     required this.costs,
     required this.recommendationType,
+    required this.os,
     // required this.createdDate,
     // required this.pluginId,
   });
@@ -37,6 +38,7 @@ class RecommendationNodeModel {
   String relatedThreatsWeights;
   String costs;
   String recommendationType;
+  String os;
   // String createdDate;
   // String pluginId;
 
@@ -63,7 +65,7 @@ class RecommendationNodeModel {
         relatedThreatsWeights: json["relatedThreatsWeights"],
         costs: json["costs"],
         recommendationType: json["RecommendationType"],
-        // createdDate: json["createdDate"],
+        os: json["os"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -86,6 +88,6 @@ class RecommendationNodeModel {
         "relatedThreatsWeights": relatedThreatsWeights,
         "costs": costs,
         "recommendationType": recommendationType,
-        // "createdDate": createdDate,
+        "os": os,
       };
 }
