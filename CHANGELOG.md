@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.10
+
+* fix bug
+
 ## 0.4.9
 
 * Add os attributes for recommendation
