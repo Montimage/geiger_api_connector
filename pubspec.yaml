@@ -1,6 +1,6 @@
 name: geiger_api_connector
 description: A connector to GEIGER APIs
-version: 0.4.10
+version: 0.4.11
 # publish_to: none
 homepage: "https://github.com/luongnv89/geiger_api_connector"
 
@@ -11,8 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  geiger_localstorage: ^0.8.0
-  geiger_api: ^0.8.1
+  geiger_localstorage: ^0.8.2
+  geiger_api: ^0.8.2
   uuid: ^3.0.6
   intl: ^0.17.0
 

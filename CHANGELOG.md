@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.4.11
+
+* update to geiger_api 0.8.2
+
 ## 0.4.10
 
 * fix bug
